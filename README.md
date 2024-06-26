@@ -1,7 +1,7 @@
-## API for dynamically generating PDFs - QuickDoc API
+# API for dynamically generating PDFs - QuickDoc API
 
 
-### The Problem and Solution
+## The Problem and Solution
 
 Documents are central to professional communication, wether it be invoices, contracts,reports and brochures. Businesses generate billions of PDFs daily. Traditional methods for generating PDFs based on real-time business data often required complex processes varying from manual data entry to custom scripting involving multiple handoffs between  different software systems. A PDF generation API addresses these challenges by providing a more automated and efficient way to create documents with real-time data. What takes hours can be done in seconds. 
 
@@ -17,7 +17,7 @@ Furthermore, the API enables document signatures and tracking.
 
 #### ^https://www.ibml.com/blog/how-to-choose-the-best-document-automation-software/
 
-### Project Tracking
+## Project Tracking
 
 The project progress is tracked using a GitHub projects Kanban board and daily standups.
 
