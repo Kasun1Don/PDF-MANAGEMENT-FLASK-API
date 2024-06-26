@@ -16,7 +16,7 @@ class User(db.Model):
     org_name: Mapped[str] = mapped_column(String(100), nullable=False)
     is_admin: Mapped[bool] = mapped_column(Boolean(), default=False)
 
-    # documents: Mapped[List['Document']] = relationship('Document', back_populates='user')
+    documents: Mapped[List['Document']] = relationship('Document', back_populates='user')
 
 
 class UserSchema(ma.Schema):
@@ -24,12 +24,9 @@ class UserSchema(ma.Schema):
     email = fields.Email(required=True)
     username = fields.String(required=True, validate=validate.Length(min=1))
     password_hash = fields.String(required=True, validate=validate.Length(min=8))
-    documents = Nested('DocumentSchema', many=True, exclude=('user',))
+
+    documents = fields.Nested('DocumentSchema', many=True, exclude=('user',))
 
     class Meta:
-        model = User
-        load_instance = True
-        include_relationships = True
         fields = ('id', 'username', 'email', 'org_name', 'is_admin', 'documents')
 
- 

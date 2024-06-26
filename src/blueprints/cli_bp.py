@@ -60,7 +60,7 @@ def db_seed():
     # # Creating sample documents
     # documents = [
     #     Document(
-    #         org_id=1,
+    #         org_name="OrgA",
     #         document_type="Invoice",
     #         document_number="INV001",
     #         date="2024-05-01",
@@ -69,7 +69,7 @@ def db_seed():
     #         user_id=users[0].id
     #     ),
     #     Document(
-    #         org_id=2,
+    #         org_name="OrgB",
     #         document_type="Legal",
     #         document_number="LD001",
     #         date="2024-06-01",

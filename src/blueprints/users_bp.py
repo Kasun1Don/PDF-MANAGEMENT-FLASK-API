@@ -1,12 +1,41 @@
+from datetime import timedelta
+from flask import Blueprint, request
+from models.user import User, UserSchema
+from flask_jwt_extended import create_access_token, jwt_required
+from init import db, bcrypt
+from auth import admin_only
 
 
 
+users_bp = Blueprint('users', __name__, url_prefix='/users')
 
 
+@users_bp.route('/login', methods=['POST']) # change default GET to POST
+def login():
+    
+    params = UserSchema(only=['username','email', 'password']).load(request.json, unknown='exclude')
+   
+    stmt = db.select(User).where(User.email == params['email'])
+    user = db.session.scalar(stmt) 
+    if user and bcrypt.check_password_hash(user.password, params['password']): #check against stored password and input password
+
+        # Generate the JWT with unique identifier (using attribute from User object)
+        token = create_access_token(identity=user.id, expires_delta=timedelta(hours=4))
+        # Return the JWT
+        return {'token': token}
+    else:
+        # error handling(user not found, wrong username or wrong password)
+        return {'error': 'Invalid email or password'}, 401 #don't say exactly which
 
 
-
-
+# setup the user
+@users_bp.route('/', methods=['POST'])
+@admin_only
+def create_user():
+     # create a new user
+     params = UserSchema(only=['email', 'password', 'name', 'is_admin']).load(request.json)
+     print(params)
+     return params
 
 
 
