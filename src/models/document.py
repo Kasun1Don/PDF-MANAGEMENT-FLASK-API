@@ -1,3 +1,4 @@
+from typing import List
 from init import db, ma
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String, Text, JSON, ForeignKey
@@ -16,8 +17,10 @@ class Document(db.Model):
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
 
     template: Mapped['Template'] = relationship('Template', back_populates='documents')
-    user: Mapped['User'] = relationship('User', back_populates='documents')
-
+    users: Mapped['User'] = relationship('User', back_populates='documents')
+    document_accesses: Mapped[list['DocumentAccess']] = relationship('DocumentAccess', back_populates='document')
+    signatures: Mapped[list['Signature']] = relationship('Signature', back_populates='document')
+    
 class DocumentSchema(ma.Schema):
     # Custom field validation
     org_name = fields.String(required=True)
