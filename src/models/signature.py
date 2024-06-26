@@ -5,7 +5,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String, DateTime, ForeignKey
 from marshmallow import fields, validate
 
-
 class Signature(db.Model):
     __tablename__ = 'signatures'
     
@@ -19,10 +18,12 @@ class Signature(db.Model):
     document: Mapped['Document'] = relationship('Document', back_populates='signatures')
 
 class SignatureSchema(ma.Schema):
-        # Custom field validation
+    # Custom field validation
     signature_data = fields.String(required=True)
     signer_name = fields.String(required=False)
     signer_email = fields.Email(required=False)
 
-    class Meta:
     document = fields.Nested('DocumentSchema', exclude=('signatures',))
+
+    class Meta:
+        fields = ('id', 'document_id', 'timestamp', 'signature_data', 'signer_name', 'signer_email', 'document')
