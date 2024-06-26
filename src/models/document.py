@@ -1,7 +1,6 @@
 from init import db, ma
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String, Text, JSON, ForeignKey
-from marshmallow_sqlalchemy.fields import Nested
 from marshmallow import fields, validate
 
 class Document(db.Model):
@@ -28,7 +27,7 @@ class DocumentSchema(ma.Schema):
     content = fields.Dict(required=True)
 
     template = fields.Nested('TemplateSchema', exclude=('documents',))
-    user = fields.Nested('UserSchema', exclude=('documents',))
+    user = fields.Nested('UserSchema', only=['username', 'email', 'org_name'],exclude=('documents',))
 
     class Meta:
-        fields = ('id', 'org_name', 'email', 'org_name', 'is_admin', 'documents')
+        fields = ('id', 'org_name', 'document_type', 'document_number', 'date', 'content', 'template', 'user')

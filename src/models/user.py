@@ -2,8 +2,6 @@ from typing import List
 from init import db, ma
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Boolean
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
-from marshmallow_sqlalchemy.fields import Nested
 from marshmallow import fields, validate
 
 class User(db.Model):
