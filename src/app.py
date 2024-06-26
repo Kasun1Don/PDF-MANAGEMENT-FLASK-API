@@ -2,14 +2,15 @@ from init import app
 from marshmallow.exceptions import ValidationError
 # from blueprints.cards_bp import cards_bp
 # from blueprints.users_bp import users_bp
-# from blueprints.cli_bp import db_commands
+from blueprints.cli_bp import db_commands
 
+
+app.register_blueprint(db_commands)
 
 
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
-
 
 
 
