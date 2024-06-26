@@ -1,5 +1,6 @@
 from init import db
 
+# admin only login
 def admin_only():
     @jwt_required
     def inner():

@@ -16,8 +16,11 @@ app.config['JWT_SECRET_KEY'] = environ.get('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URI')
 app.json.sort_keys = False
 
+# configuration settings
+
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
+
 ma = Marshmallow(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
