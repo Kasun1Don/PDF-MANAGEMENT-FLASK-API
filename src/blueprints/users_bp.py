@@ -4,6 +4,13 @@
 
 
 
+
+
+
+
+
+
+
 #register a new user
 
 @app.route("/register", methods=["POST"])
