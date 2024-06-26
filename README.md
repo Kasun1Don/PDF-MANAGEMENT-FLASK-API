@@ -1,4 +1,4 @@
-## API for creating and manipulating PDFs - QuickDoc API
+## API for dynamically generating PDFs - QuickDoc API
 
 
 ### The Problem and Solution
