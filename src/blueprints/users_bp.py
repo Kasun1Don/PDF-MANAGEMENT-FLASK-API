@@ -10,7 +10,7 @@ from init import db, bcrypt
 users_bp = Blueprint("users", __name__, url_prefix="/users")
 
 
-# get a list of all users from the admin's organization
+# get a list of all users from the organization
 @users_bp.route('/', methods=['GET'])
 @jwt_required()
 def get_users():

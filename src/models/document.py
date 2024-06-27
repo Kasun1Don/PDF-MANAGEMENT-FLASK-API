@@ -1,6 +1,5 @@
 from typing import List
 import uuid
-import pytz
 from datetime import datetime
 from init import db, ma
 from sqlalchemy.dialects.postgresql import UUID
@@ -14,8 +13,8 @@ class Document(db.Model):
     
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    org_name: Mapped[str] = mapped_column(String(500), nullable=False)
-    document_type: Mapped[str] = mapped_column(String(500), nullable=False)
+    org_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    document_type: Mapped[str] = mapped_column(String(50), nullable=False)
     document_number: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False)
     date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=lambda: datetime.now())
     content: Mapped[dict] = mapped_column(JSON, nullable=False)
@@ -31,8 +30,8 @@ class Document(db.Model):
 class DocumentSchema(ma.Schema):
     # Custom field validation
     org_name = fields.String(required=True)
-    document_type = fields.String(required=True)
-    document_number = fields.UUID(required=True)
+    document_type = fields.String(required=True, validate=validate.Length(min=1))
+    # document_number = fields.UUID(required=True)
     # date = fields.DateTime(required=True)
     content = fields.Dict(required=True)
     template_id = fields.Integer(required=True)

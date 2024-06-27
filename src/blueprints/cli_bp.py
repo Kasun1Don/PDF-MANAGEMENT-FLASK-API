@@ -61,7 +61,7 @@ def db_create():
         Document(
             org_name="OrgA",
             document_type="Invoice",
-            document_number="INV001",
+            document_number="2be167bc-ed6e-4893-879e-130c15fd8823",
             date="2024-05-01",
             content={"date": "2024-05-01", "total_amount": 1000, "item_list": ["Item1", "Item2"]},
             template_id=1,
@@ -71,7 +71,7 @@ def db_create():
         Document(
             org_name="OrgB",
             document_type="Legal",
-            document_number="LD001",
+            document_number="bbf75963-fd2f-4317-b3e2-070eeb1ed4ca",
             date="2024-06-01",
             content={"title": "Agreement", "content": "This is a legal document.", "signatures": []},
             template_id=2,
