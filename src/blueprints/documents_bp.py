@@ -18,7 +18,7 @@ def get_documents_by_user(user_id):
         return {"error": "user_id not found"}, 404
     
     documents = db.session.query(Document).filter_by(user_id=user_id).all()
-    return DocumentSchema(many=True).dump(documents), 200
+    return DocumentSchema(many=True, exclude=["template_id", "signatures"]).dump(documents), 200
 
 
 # get all documents for current user's organization
@@ -32,14 +32,14 @@ def get_org_documents():
     documents = (
         db.session.query(Document).filter_by(org_name=current_user.org_name).all()
     )
-    return DocumentSchema(many=True).dump(documents), 200
+    return DocumentSchema(many=True, exclude=["template_id", "signatures"]).dump(documents), 200
 
 # get a specific document by document_id
 @documents_bp.route("/<int:document_id>", methods=["GET"])
 @jwt_required()
 def get_document(document_id):
     document = db.get_or_404(Document, document_id)
-    return DocumentSchema().dump(document), 200
+    return DocumentSchema(exclude=["template_id", "signatures"]).dump(document), 200
 
 
 # get ALL documents from database (A)
@@ -47,7 +47,7 @@ def get_document(document_id):
 @jwt_required()
 def get_all_documents():
     documents = db.session.query(Document).all()
-    return DocumentSchema(many=True).dump(documents), 200
+    return DocumentSchema(many=True, exclude=["template_id", "signatures"]).dump(documents), 200
 
 
 
@@ -74,7 +74,7 @@ def create_document():
     db.session.add(new_document)
     db.session.commit()
 
-    return DocumentSchema().dump(new_document)
+    return DocumentSchema(exclude=["signatures"]).dump(new_document)
 
     # return document_schema.dump(new_document), 201
 
@@ -99,7 +99,7 @@ def update_document(document_id):
 
     db.session.commit()
 
-    return DocumentSchema().dump(document), 200
+    return DocumentSchema( exclude=["template_id", "signatures"]).dump(document), 200
 
 
 # document creator can delete documents
