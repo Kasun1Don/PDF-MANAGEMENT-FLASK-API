@@ -8,18 +8,20 @@ class Document(db.Model):
     __tablename__ = 'documents'
     
     id: Mapped[int] = mapped_column(primary_key=True)
+
     org_name: Mapped[str] = mapped_column(String(100), nullable=False)
     document_type: Mapped[str] = mapped_column(String(50), nullable=False)
     document_number: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
     date: Mapped[str] = mapped_column(String(10), nullable=False)
     content: Mapped[dict] = mapped_column(JSON, nullable=False)
+
     template_id: Mapped[int] = mapped_column(Integer, ForeignKey('templates.id'), nullable=False)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
 
     template: Mapped['Template'] = relationship('Template', back_populates='documents')
     users: Mapped['User'] = relationship('User', back_populates='documents')
-    document_accesses: Mapped[list['DocumentAccess']] = relationship('DocumentAccess', back_populates='document')
-    signatures: Mapped[list['Signature']] = relationship('Signature', back_populates='document')
+    document_accesses: Mapped[list['DocumentAccess']] = relationship('DocumentAccess', back_populates='document', cascade='all, delete')
+    signatures: Mapped[list['Signature']] = relationship('Signature', back_populates='document', cascade='all, delete')
     
 class DocumentSchema(ma.Schema):
     # Custom field validation

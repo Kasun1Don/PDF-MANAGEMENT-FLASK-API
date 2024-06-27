@@ -8,12 +8,12 @@ class Signature(db.Model):
     
     id: Mapped[int] = mapped_column(primary_key=True)
     
-    document_id: Mapped[int] = mapped_column(Integer, ForeignKey('documents.id'), nullable=False)
-    
     timestamp: Mapped[DateTime] = mapped_column(DateTime, nullable=False, default=db.func.current_timestamp())
     signature_data: Mapped[str] = mapped_column(String, nullable=False)
     signer_name: Mapped[str] = mapped_column(String, nullable=True)
     signer_email: Mapped[str] = mapped_column(String, nullable=True)
+
+    document_id: Mapped[int] = mapped_column(Integer, ForeignKey('documents.id'), nullable=False)
 
     document: Mapped['Document'] = relationship('Document', back_populates='signatures')
 

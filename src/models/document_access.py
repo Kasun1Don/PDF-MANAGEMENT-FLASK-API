@@ -10,14 +10,14 @@ class DocumentAccess(db.Model):
     
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    document_id: Mapped[int] = mapped_column(Integer, ForeignKey('documents.id'), nullable=False)
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
-
     share_link: Mapped[str] = mapped_column(String, nullable=False)
     expires_at: Mapped[DateTime] = mapped_column(DateTime, nullable=False)
     purpose: Mapped[str] = mapped_column(String, nullable=False)
     signed: Mapped[bool] = mapped_column(Boolean, default=False)
     access_time: Mapped[DateTime] = mapped_column(DateTime, nullable=True)
+
+    document_id: Mapped[int] = mapped_column(Integer, ForeignKey('documents.id'), nullable=False)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
 
     document: Mapped['Document'] = relationship('Document', back_populates='document_accesses')
     user: Mapped['User'] = relationship('User', back_populates='document_accesses')

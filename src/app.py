@@ -1,11 +1,12 @@
 from init import app
 from marshmallow.exceptions import ValidationError
 # from blueprints.cards_bp import cards_bp
-# from blueprints.users_bp import users_bp
+from blueprints.users_bp import users_bp
 from blueprints.cli_bp import db_commands
 
 
 app.register_blueprint(db_commands)
+app.register_blueprint(users_bp)
 
 
 @app.route('/')
@@ -16,8 +17,6 @@ def hello_world():
 
 print(app.url_map)
 
-
-#handles any error object (captures 404 & 405)
 @app.errorhandler(405)
 @app.errorhandler(404)
 def not_found(err): 
@@ -32,6 +31,10 @@ def invalid_request(err):
 @app.errorhandler(KeyError)
 def missing_key(err):
     return {'error': f"missing field: {str(err)}"}, 400
+
+@app.errorhandler(500)
+def internal_server_error(err):
+    return {'error': 'Internal Server Error'}, 500
 
 if __name__ == '__main__':
     app.run()

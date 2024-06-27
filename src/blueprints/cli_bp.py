@@ -8,7 +8,6 @@ from models.document_access import DocumentAccess
 from models.signature import Signature
 
 
-
 db_commands = Blueprint('db', __name__)
 
 @db_commands.cli.command("create")
@@ -17,28 +16,25 @@ def db_create():
     db.create_all()
     print("Created tables")
 
-# @db_commands.cli.command("seed")
-# def db_seed():
-    # Creating sample users
     users = [
         User(
             username="alice",
-            email="alice@example.com",
-            password_hash=bcrypt.generate_password_hash("password").decode('utf8'),
+            email="admin@example.com",
+            password=bcrypt.generate_password_hash("password").decode('utf8'),
             org_name="OrgA",
             is_admin=True
         ),
         User(
             username="bob",
             email="bob@example.com",
-            password_hash=bcrypt.generate_password_hash("password").decode('utf8'),
+            password=bcrypt.generate_password_hash("password").decode('utf8'),
             org_name="OrgA",
             is_admin=False
         ),
         User(
             username="charlie",
             email="charlie@example.com",
-            password_hash=bcrypt.generate_password_hash("password").decode('utf8'),
+            password=bcrypt.generate_password_hash("password").decode('utf8'),
             org_name="OrgB",
             is_admin=True
         )
@@ -70,8 +66,7 @@ def db_create():
             content={"date": "2024-05-01", "total_amount": 1000, "item_list": ["Item1", "Item2"]},
             template_id=1,
             user_id=1
-            # template_id=templates[0].id,
-            # user_id=users[0].id
+
         ),
         Document(
             org_name="OrgB",
@@ -89,16 +84,16 @@ def db_create():
     # Creating sample document accesses
     document_accesses = [
         DocumentAccess(
-            document_id=documents[0].id,
-            user_id=users[1].id,
+            document_id=1,
+            user_id=3,
             share_link="http://example.com/share/INV001",
             expires_at=datetime(2024, 6, 1),
             purpose="Review",
             signed=False
         ),
         DocumentAccess(
-            document_id=documents[1].id,
-            user_id=users[2].id,
+            document_id=2,
+            user_id=2,
             share_link="http://example.com/share/LD001",
             expires_at=datetime(2024, 7, 1),
             purpose="Sign",
@@ -111,7 +106,7 @@ def db_create():
     # Creating sample signatures
     signatures = [
         Signature(
-            document_id=documents[1].id,
+            document_id=1,
             timestamp=datetime(2024, 6, 1),
             signature_data="Signature1",
             signer_name="Charlie",

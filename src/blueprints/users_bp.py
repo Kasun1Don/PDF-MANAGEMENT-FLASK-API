@@ -1,72 +1,87 @@
 from datetime import timedelta
-from flask import Blueprint, request
+from flask import Blueprint, request, abort
 from models.user import User, UserSchema
 from flask_jwt_extended import create_access_token, jwt_required
 from init import db, bcrypt
-from auth import admin_only
-
+# from auth import admin_only
 
 
 users_bp = Blueprint('users', __name__, url_prefix='/users')
 
 
-@users_bp.route('/login', methods=['POST']) # change default GET to POST
+# user registration (orgname should be unique)
+@users_bp.route('/register', methods=['POST'])
+def register_user():
+    params = UserSchema(only=['id', 'username', 'email', 'password', 'org_name']).load(request.json, unknown='exclude')
+    
+    stmt = db.select(User).filter_by(email=request.json['email'])
+    user = db.session.scalar(stmt)
+
+    if user:
+        return {'error': 'Email already registered'}, 400
+    
+    user = User(
+        username=params['username'],
+        email=params['email'],
+        password=bcrypt.generate_password_hash(params['password']).decode('utf8'),
+        org_name=params['org_name'],
+    )
+    db.session.add(user)
+    db.session.commit()
+
+    return UserSchema().dump(user), 201
+
+
+# login access token (after registration)
+@users_bp.route('/login', methods=['POST']) 
 def login():
     
-    params = UserSchema(only=['username','email', 'password']).load(request.json, unknown='exclude')
+    params = UserSchema(only=['email', 'password']).load(request.json, unknown='exclude')
    
     stmt = db.select(User).where(User.email == params['email'])
     user = db.session.scalar(stmt) 
     if user and bcrypt.check_password_hash(user.password, params['password']): #check against stored password and input password
 
-        # Generate the JWT with unique identifier (using attribute from User object)
+
         token = create_access_token(identity=user.id, expires_delta=timedelta(hours=4))
-        # Return the JWT
+
         return {'token': token}
     else:
-        # error handling(user not found, wrong username or wrong password)
-        return {'error': 'Invalid email or password'}, 401 #don't say exactly which
 
+        return {'error': 'Invalid email or password'}, 401 
 
-# setup the user
-@users_bp.route('/', methods=['POST'])
-@admin_only
+# application admin can create a user (add roles permissions in future)
+@users_bp.route("/create", methods=['POST'])
+@jwt_required()
 def create_user():
-     # create a new user
-     params = UserSchema(only=['email', 'password', 'name', 'is_admin']).load(request.json)
-     print(params)
-     return params
+    params = UserSchema(only=['id', 'username', 'email', 'password', 'org_name', 'is_admin']).load(request.json, unknown='exclude')
+    
+    stmt = db.select(User).filter_by(email=request.json['email'])
+    user = db.session.scalar(stmt)
 
+    if user:
+        return {'error': 'Email already registered'}, 400
+    
+    user = User(
+        username=params['username'],
+        email=params['email'],
+        password=bcrypt.generate_password_hash(params['password']).decode('utf8'),
+        org_name=params['org_name'],
+        is_admin=params['is_admin']
+    )
+    db.session.add(user)
+    db.session.commit()
 
+    return UserSchema().dump(user), 201
 
+# admin can delete a user (if from same organization)
+@users_bp.route("/<int:id>", methods=['DELETE'])
+@jwt_required()
+# @admin_only
+def delete_user(id):
+    user_to_delete = db.get_or_404(User, id)
+    db.session.delete(user_to_delete)
+    db.session.commit()
+    return {'message': "User deleted successfully"}
 
-# #register a new user
-
-# @app.route("/register", methods=["POST"])
-# def auth_register():
-#     #The request data will be loaded in a user_schema converted to JSON. request needs to be imported from
-#     user_fields = user_schema.load(request.json)
-#    # find the user by email address
-#     stmt = db.select(User).filter_by(email=request.json['email'])
-#     user = db.session.scalar(stmt)
-
-#     if user:
-#         # return an abort message to inform the user. That will end the request
-#         return abort(400, description="Email already registered")
-#     # Create the user object
-#     user = User()
-#     #Add the email attribute
-#     user.email = user_fields["email"]
-#     #Add the password attribute hashed by bcrypt
-#     user.password = bcrypt.generate_password_hash(user_fields["password"]).decode("utf-8")
-#     #Add it to the database and commit the changes
-#     db.session.add(user)
-#     db.session.commit()
-#     #create a variable that sets an expiry date
-#     expiry = timedelta(days=1)
-#     #create the access token
-#     access_token = create_access_token(identity=str(user.id), expires_delta=expiry)
-#     # return the user email and the access token
-#     return jsonify({"user":user.email, "token": access_token })
-
-
+# user can update their email, password and username
