@@ -39,8 +39,9 @@ class DocumentSchema(ma.Schema):
     # nested schema
     template = fields.Nested('TemplateSchema', only=['name'])
     user = fields.Nested('UserSchema', only=['username', 'email', 'org_name'],exclude=('documents',))
+    document_accesses = fields.Nested('DocumentAccessSchema', many=True, dump_only=True, exclude=('documents',))
 
     class Meta:
-        fields = ('id', 'org_name', 'document_type', 'document_number', 'date', 'content', 'template_id', 'template', 'user')
+        fields = ('id', 'org_name', 'document_type', 'document_number', 'date', 'content', 'template_id', 'template', 'user', 'document_accesses')
 
 

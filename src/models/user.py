@@ -24,5 +24,7 @@ class UserSchema(ma.Schema):
     username = fields.String(required=True, validate=validate.Length(min=1))
     password = fields.String(required=True, validate=validate.Length(min=8), load_only=True)
 
+    document_accesses = fields.Nested('DocumentAccessSchema', many=True, dump_only=True)
+
     class Meta:
-        fields = ('id', 'username', 'email', 'password', 'org_name', 'is_admin')
+        fields = ('id', 'username', 'email', 'password', 'org_name', 'is_admin', 'document_accesses')

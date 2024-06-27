@@ -27,14 +27,19 @@ class DocumentAccess(db.Model):
 
 class DocumentAccessSchema(ma.Schema):
     # Custom field validation
-    share_link = fields.String(required=True)
+    share_link = fields.UUID(dump_only=True)
     purpose = fields.String(required=True)
-    signed = fields.Boolean(required=True)
+    signed = fields.Boolean(dump_only=True)
     # access_time = fields.DateTime(required=False)
+    document_id = fields.Integer(required=True)
 
-    document = fields.Nested('DocumentSchema', exclude=('document_accesses',))
+    document = fields.Nested('DocumentSchema', only=['id', 'document_type', 'document_number', 'content'], exclude=('document_accesses',))
     user = fields.Nested('UserSchema', only=['username', 'email'], exclude=('document_accesses',))
 
     class Meta:
-        fields = ('id', 'document_id', 'user_id', 'share_link', 'expires_at', 
-                  'purpose', 'signed', 'access_time', 'document', 'user')
+        fields = ('document_id', 'share_link', 'expires_at', 
+                  'purpose', 'access_time')
+        
+    #     class Meta:
+    # fields = ('id', 'document_id', 'user_id', 'share_link', 'expires_at', 
+    #             'purpose', 'signed', 'access_time', 'document', 'user')
