@@ -3,10 +3,14 @@ from marshmallow.exceptions import ValidationError
 # from blueprints.cards_bp import cards_bp
 from blueprints.users_bp import users_bp
 from blueprints.cli_bp import db_commands
+from blueprints.templates_bp import templates_bp
+from blueprints.documents_bp import documents_bp
 
 
 app.register_blueprint(db_commands)
 app.register_blueprint(users_bp)
+app.register_blueprint(templates_bp)
+app.register_blueprint(documents_bp)
 
 
 @app.route('/')

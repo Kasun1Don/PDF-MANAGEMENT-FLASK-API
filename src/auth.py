@@ -24,4 +24,3 @@ def authorize_owner(document):
     user_id = get_jwt_identity()
     if user_id != document.user_id:
         abort(make_response(jsonify(error = "You must be document owner"), 403))
-

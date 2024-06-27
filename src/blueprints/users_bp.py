@@ -1,5 +1,5 @@
 from datetime import timedelta
-from flask import Blueprint, request, abort
+from flask import Blueprint, request
 from models.user import User, UserSchema
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from init import db, bcrypt

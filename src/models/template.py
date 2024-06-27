@@ -14,7 +14,6 @@ class Template(db.Model):
 
     documents: Mapped[list['Document']] = relationship('Document', back_populates='template')
 
-
 class TemplateSchema(ma.Schema):
     # Custom field validation
     name = fields.String(required=True)
@@ -23,4 +22,7 @@ class TemplateSchema(ma.Schema):
     documents = fields.Nested('DocumentSchema', many=True, exclude=('template',))
 
     class Meta:
-        fields = ('id', 'name', 'structure', 'documents')
+        fields = ('id', 'name', 'structure')
+
+
+
