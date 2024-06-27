@@ -18,6 +18,7 @@ class DocumentAccess(db.Model):
     purpose: Mapped[str] = mapped_column(String, nullable=False)
     signed: Mapped[bool] = mapped_column(Boolean(), default=False)
     access_time: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    views: Mapped[int] = mapped_column(default=0)
     
     document_id: Mapped[int] = mapped_column(Integer, ForeignKey('documents.id', ondelete="CASCADE"), nullable=False)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
@@ -30,6 +31,7 @@ class DocumentAccessSchema(ma.Schema):
     share_link = fields.UUID(dump_only=True)
     purpose = fields.String(required=True)
     signed = fields.Boolean(dump_only=True)
+    views = fields.Integer(dump_only=True)
     # access_time = fields.DateTime(required=False)
     document_id = fields.Integer(required=True)
 
@@ -38,8 +40,14 @@ class DocumentAccessSchema(ma.Schema):
 
     class Meta:
         fields = ('document_id', 'share_link', 'expires_at', 
-                  'purpose', 'access_time')
-        
-    #     class Meta:
-    # fields = ('id', 'document_id', 'user_id', 'share_link', 'expires_at', 
-    #             'purpose', 'signed', 'access_time', 'document', 'user')
+                  'purpose', 'access_time', 'signed', 'views', 'documents')
+
+
+class DocumentAccessViewSchema(ma.Schema):
+    document_id = fields.Int()
+    share_link = fields.UUID()
+    views = fields.Int()
+    purpose = fields.String()
+
+    class Meta:
+        fields = ('views', 'document_id', 'share_link', 'purpose')

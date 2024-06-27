@@ -5,7 +5,7 @@ from models.user import User
 from models.template import Template
 from models.document import Document
 from models.document_access import DocumentAccess
-from models.signature import Signature
+from models.docsignature import Signature
 
 
 db_commands = Blueprint('db', __name__)
@@ -111,6 +111,13 @@ def db_create():
             signature_data="Signature1",
             signer_name="Charlie",
             signer_email="charlie@example.com"
+        ),
+        Signature(
+            document_id=2,
+            timestamp=datetime(2024, 6, 7),
+            signature_data="Signature2",
+            signer_name="Charles",
+            signer_email="charles@example.com"
         )
     ]
     db.session.add_all(signatures)

@@ -1,8 +1,7 @@
-from datetime import timedelta
-from flask import Blueprint, request, abort
-from models.user import User, UserSchema
-from flask_jwt_extended import create_access_token, jwt_required
-from init import db, bcrypt
+
+from flask import Blueprint, request
+from flask_jwt_extended import jwt_required
+from init import db
 from models.template import Template, TemplateSchema
 
 

@@ -13,8 +13,8 @@ class Document(db.Model):
     
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    org_name: Mapped[str] = mapped_column(String(100), nullable=False)
-    document_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    org_name: Mapped[str] = mapped_column(String(80), nullable=False)
+    document_type: Mapped[str] = mapped_column(String(40), nullable=False)
     document_number: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False)
     date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=lambda: datetime.now())
     content: Mapped[dict] = mapped_column(JSON, nullable=False)
@@ -40,8 +40,7 @@ class DocumentSchema(ma.Schema):
     template = fields.Nested('TemplateSchema', only=['name'])
     user = fields.Nested('UserSchema', only=['username', 'email', 'org_name'],exclude=('documents',))
     document_accesses = fields.Nested('DocumentAccessSchema', many=True, dump_only=True, exclude=('documents',))
+    signatures = fields.Nested('SignatureSchema',exclude=['signatures'])
 
     class Meta:
-        fields = ('id', 'org_name', 'document_type', 'document_number', 'date', 'content', 'template_id', 'template', 'user', 'document_accesses')
-
-
+        fields = ('id', 'org_name', 'document_type', 'document_number', 'date', 'content', 'template_id', 'template', 'user', 'signatures')
