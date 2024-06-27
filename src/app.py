@@ -1,5 +1,6 @@
 from init import app
 from marshmallow.exceptions import ValidationError
+from werkzeug.exceptions import BadRequest
 # from blueprints.cards_bp import cards_bp
 from blueprints.users_bp import users_bp
 from blueprints.cli_bp import db_commands
@@ -35,6 +36,10 @@ def invalid_request(err):
 @app.errorhandler(KeyError)
 def missing_key(err):
     return {'error': f"missing field: {str(err)}"}, 400
+
+@app.errorhandler(BadRequest)
+def handle_bad_request(err):
+    return {'error': str(err.description)}, 400
 
 @app.errorhandler(500)
 def internal_server_error(err):

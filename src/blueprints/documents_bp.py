@@ -121,6 +121,3 @@ def delete_document(document_id):
     db.session.commit()
 
     return {"message": "Document deleted successfully"}, 200
-
-
-

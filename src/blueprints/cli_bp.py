@@ -86,7 +86,7 @@ def db_create():
         DocumentAccess(
             document_id=1,
             user_id=3,
-            share_link="http://example.com/share/INV001",
+            share_link="http://example.com/share/bbf75963-fd2f-4317-b3e2-070eeb1ed4ca",
             expires_at=datetime(2024, 6, 1),
             purpose="Review",
             signed=False
@@ -94,7 +94,7 @@ def db_create():
         DocumentAccess(
             document_id=2,
             user_id=2,
-            share_link="http://example.com/share/LD001",
+            share_link="http://example.com/share/2be167bc-ed6e-4893-879e-130c15fd8823",
             expires_at=datetime(2024, 7, 1),
             purpose="Sign",
             signed=False
