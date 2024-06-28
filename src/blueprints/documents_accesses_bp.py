@@ -9,7 +9,7 @@ from models.docsignature import Signature, SignatureSchema
 from models.document import Document
 from models.user import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from sqlalchemy import desc
+from sqlalchemy import desc, exists
 from init import db
 
 
@@ -28,7 +28,7 @@ def create_access():
     )
 
     if params["purpose"] not in VALID_PURPOSES:
-        return {"error": "Invalid purpose. Valid options are: 'Review' or 'Sign'"}, 400
+        return {"error": "Invalid 'Purpose'. Valid options are: 'Review' or 'Sign'"}, 400
 
     current_user_id = get_jwt_identity()
 
@@ -58,7 +58,7 @@ def access_document(share_link):
     # return {'message': 'Access time updated'}, 200
 @documents_accesses_bp.errorhandler(AttributeError)
 def handle_attribute_error(e):
-    return {"error": "create a document access link first"}, 500
+    return {"error": "please create a document access link first"}, 500
 
 
 # sign document
@@ -69,6 +69,15 @@ def sign_document(share_link):
     # Find the DocumentAccess by share_link
     access = db.session.query(DocumentAccess).filter_by(share_link=share_link).first()
 
+    # check if the share link has expired
+    if access.expires_at < datetime.now():
+        return {"error": "share link has expired"}, 403
+
+    # check if the document has already been signed
+    existing_signature = db.session.query(exists().where(Signature.document_id == access.document_id)).scalar()
+    if existing_signature:
+        return {"error": "Document has already been signed"}, 400
+    
     # Create a new signature
     new_signature = Signature(
         document_id=access.document_id,

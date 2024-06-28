@@ -6,17 +6,18 @@ from functools import wraps
 
 # admin only login
 def admin_only(fn):
-    @wraps(fn) # preserves the original function's metadata
+    @wraps(fn)
     @jwt_required()
     def inner(*args, **kwargs):
         user_id = get_jwt_identity()
-        stmt = db.select(User).where(User.id == user_id, User.is_admin)
-        user = db.session.scalar(stmt)
-        if user:
-            return fn(*args, **kwargs)
-        else:
-            return {'error': "You must be an admin to access this resource"}, 403
-    return inner()
+        user = db.session.query(User).filter_by(id=user_id).first()
+
+        if not user or not user.is_admin:
+            return jsonify({"error": "Admin access required"}), 403
+
+        return fn(*args, **kwargs)
+    
+    return inner
 
 
 # ensure that the JWT use is the owner of the document (for Document deletion)

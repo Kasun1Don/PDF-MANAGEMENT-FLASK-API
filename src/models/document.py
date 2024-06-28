@@ -29,12 +29,10 @@ class Document(db.Model):
     
 class DocumentSchema(ma.Schema):
     # Custom field validation
-    org_name = fields.String(required=True)
-    document_type = fields.String(required=True, validate=validate.Length(min=1))
-    # document_number = fields.UUID(required=True)
-    # date = fields.DateTime(required=True)
+    org_name = fields.String(required=True, validate=validate.Length(min=1,  error='organization name is required'))
+    document_type = fields.String(required=True, validate=validate.Length(min=1, error='document type/name is required'))
     content = fields.Dict(required=True)
-    template_id = fields.Integer(required=True)
+    template_id = fields.Integer(required=True, validate=validate.Range(min=1, error='missing template_id'))
 
     # nested schema
     template = fields.Nested('TemplateSchema', only=['name'])

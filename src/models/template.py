@@ -16,7 +16,7 @@ class Template(db.Model):
 
 class TemplateSchema(ma.Schema):
     # Custom field validation
-    name = fields.String(required=True)
+    name = fields.String(required=True, validate=validate.Length(min=1,  error='template name is required'))
     structure = fields.Dict(required=True)
 
     documents = fields.Nested('DocumentSchema', many=True, exclude=('template',))

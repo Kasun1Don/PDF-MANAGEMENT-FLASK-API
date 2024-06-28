@@ -3,6 +3,7 @@ from flask import Blueprint, request
 from models.user import User, UserSchema
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from init import db, bcrypt
+from auth import admin_only
 
 # from auth import admin_only
 
@@ -23,7 +24,7 @@ def get_users():
     return UserSchema(many=True).dump(users), 200
 
 
-# user registration (orgname should be unique)
+# user registration (org_name is important)
 @users_bp.route("/register", methods=["POST"])
 def register_user():
     params = UserSchema(only=["id", "username", "email", "password", "org_name"]).load(
@@ -48,7 +49,7 @@ def register_user():
     return UserSchema().dump(user), 201
 
 
-# login access token (after registration)
+# login route
 @users_bp.route("/login", methods=["POST"])
 def login():
 
@@ -70,9 +71,9 @@ def login():
         return {"error": "Invalid email or password"}, 401
 
 
-# application admin can create a user (add roles permissions in future)
+# admin can create a user (add roles permissions in future)
 @users_bp.route("/create", methods=["POST"])
-@jwt_required()
+@admin_only
 def create_user():
     params = UserSchema(
         only=["id", "username", "email", "password", "org_name", "is_admin"]
@@ -99,13 +100,10 @@ def create_user():
 
 # admin can delete a user (if from same organization)
 @users_bp.route("/<int:id>", methods=["DELETE"])
-@jwt_required()
+@admin_only
 def delete_user(id):
     user_to_delete = db.get_or_404(User, id)
     
     db.session.delete(user_to_delete)
     db.session.commit()
     return {"message": "User deleted successfully"}
-
-
-# user can update their email, password and username

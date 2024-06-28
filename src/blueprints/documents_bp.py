@@ -3,7 +3,7 @@ from models.document import Document, DocumentSchema
 from models.user import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from init import db
-from auth import authorize_owner
+from auth import authorize_owner, admin_only
 
 documents_bp = Blueprint("documents", __name__, url_prefix="/documents")
 
@@ -42,9 +42,9 @@ def get_document(document_id):
     return DocumentSchema(exclude=["template_id", "signatures", "document_accesses"]).dump(document), 200
 
 
-# get ALL documents from database (A)
-@documents_bp.route("/all", methods=["GET"])
-@jwt_required()
+# get ALL documents from database (Admin)
+@documents_bp.route("/", methods=["GET"])
+@admin_only
 def get_all_documents():
     documents = db.session.query(Document).all()
     return DocumentSchema(many=True, exclude=["template_id", "signatures", "document_accesses"]).dump(documents), 200

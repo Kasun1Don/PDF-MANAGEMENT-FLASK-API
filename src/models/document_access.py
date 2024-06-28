@@ -32,7 +32,6 @@ class DocumentAccessSchema(ma.Schema):
     purpose = fields.String(required=True)
     signed = fields.Boolean(dump_only=True)
     views = fields.Integer(dump_only=True)
-    # access_time = fields.DateTime(required=False)
     document_id = fields.Integer(required=True)
 
     document = fields.Nested('DocumentSchema', only=['id', 'document_type', 'document_number', 'content'], exclude=('document_accesses',))
@@ -44,10 +43,11 @@ class DocumentAccessSchema(ma.Schema):
 
 
 class DocumentAccessVisitSchema(ma.Schema):
-    document_id = fields.Int()
-    share_link = fields.UUID()
-    views = fields.Int()
-    purpose = fields.String()
+    share_link = fields.UUID(dump_only=True)
+    purpose = fields.String(required=True)
+    signed = fields.Boolean(dump_only=True)
+    views = fields.Integer(dump_only=True)
+    document_id = fields.Integer(required=True)
 
     document = fields.Nested('DocumentSchema', only=['document_type'])
 

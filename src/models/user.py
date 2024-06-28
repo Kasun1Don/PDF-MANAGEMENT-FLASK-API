@@ -3,6 +3,7 @@ from init import db, ma
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Boolean
 from marshmallow import fields, validate
+from marshmallow.validate import Length, And, Regexp
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -21,8 +22,11 @@ class User(db.Model):
 class UserSchema(ma.Schema):
     # Custom field validation
     email = fields.Email(required=True)
-    username = fields.String(required=True, validate=validate.Length(min=1))
-    password = fields.String(required=True, validate=validate.Length(min=8), load_only=True)
+    username = fields.String(required=True, validate=validate.Length(min=1, error='username must have more than one character'))
+    password = fields.String(required=True, validate=Regexp('^[a-z0-9_-]{3,16}$', 
+        error='Password must be 3-16 characters long and can only contain lowercase letters, numbers, hyphens, and underscores'), load_only=True)
+    org_name = fields.String(required=True, validate=validate.Length(min=1,  error='your organization name is required'))
+    is_admin = fields.Boolean(required=True)
 
     document_accesses = fields.Nested('DocumentAccessSchema', many=True, dump_only=True)
 
