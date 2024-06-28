@@ -20,24 +20,23 @@ def get_templates():
 @templates_bp.route("/create", methods=["POST"])
 @jwt_required()
 def create_template():
-    template_schema = TemplateSchema()
-
-    # params = TemplateSchema(only=["name", "structure"]).load(
-    #     request.json, unknown="exclude")
-
-    # new_template = Template(
-    #     name=params["name"],
-    #     structure=params["structure"])
-
-    # Validate and deserialize input into a dictionary
-    template_data = template_schema.load(request.json)
-    # Create a new Template instance using the deserialized data
-    new_template = Template(**template_data)
+    params = TemplateSchema(only=["name", "structure"]).load(request.json, unknown="exclude")
+    
+    # Check if the template with the same name already exists
+    existing_template = db.session.query(Template).filter_by(name=params["name"]).first()
+    
+    if existing_template:
+        return {"error": "Template with this name already exists"}, 400
+    
+    new_template = Template(
+        name=params["name"],
+        structure=params["structure"]
+    )
 
     db.session.add(new_template)
     db.session.commit()
-    return template_schema.dump(new_template), 201
-
+    
+    return TemplateSchema().dump(new_template), 201
 
 # creator can update a template (need make creator_id or more complex)
 

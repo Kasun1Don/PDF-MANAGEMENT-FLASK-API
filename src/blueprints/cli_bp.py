@@ -173,13 +173,13 @@ def db_create():
         ),
         DocumentAccess(
             document_id=3,
-            user_id=2,
+            user_id=1,
             share_link="123e4567-e89b-12d3-a456-426614174011",
             expires_at=datetime(2024, 8, 1),
             purpose="Review",
             signed=False
         ),
-    DocumentAccess(
+        DocumentAccess(
             document_id=4,
             user_id=1,
             share_link="123e4567-e89b-12d3-a456-426614174012",
@@ -206,13 +206,6 @@ def db_create():
             signature_data="Signature2",
             signer_name="Charles",
             signer_email="charles@example.com"
-        ),
-        Signature (
-            document_id=3,
-            timestamp=datetime(2024, 6, 16),
-            signature_data="Signature3",
-            signer_name="Alice",
-            signer_email="alice@example.com"
         ),
         Signature(
             document_id=4,

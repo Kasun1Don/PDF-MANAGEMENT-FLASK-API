@@ -40,14 +40,16 @@ class DocumentAccessSchema(ma.Schema):
 
     class Meta:
         fields = ('document_id', 'share_link', 'expires_at', 
-                  'purpose', 'access_time', 'signed', 'views', 'documents')
+                  'purpose', 'access_time', 'signed', 'views', 'document','document_access', 'documents')
 
 
-class DocumentAccessViewSchema(ma.Schema):
+class DocumentAccessVisitSchema(ma.Schema):
     document_id = fields.Int()
     share_link = fields.UUID()
     views = fields.Int()
     purpose = fields.String()
 
+    document = fields.Nested('DocumentSchema', only=['document_type'])
+
     class Meta:
-        fields = ('views', 'document_id', 'share_link', 'purpose')
+        fields = ('views', 'document_id', 'share_link', 'purpose', 'document')

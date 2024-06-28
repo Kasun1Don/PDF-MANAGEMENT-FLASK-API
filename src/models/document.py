@@ -20,7 +20,7 @@ class Document(db.Model):
     content: Mapped[dict] = mapped_column(JSON, nullable=False)
 
     template_id: Mapped[int] = mapped_column(Integer, ForeignKey('templates.id'), nullable=False)
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id', ondelete="SET NULL"), nullable=True)
 
     template: Mapped['Template'] = relationship('Template', back_populates='documents')
     users: Mapped['User'] = relationship('User', back_populates='documents')
@@ -43,4 +43,4 @@ class DocumentSchema(ma.Schema):
     signatures = fields.Nested('SignatureSchema',exclude=['signatures'])
 
     class Meta:
-        fields = ('id', 'org_name', 'document_type', 'document_number', 'date', 'content', 'template_id', 'template', 'user', 'signatures')
+        fields = ('id', 'org_name', 'document_type', 'document_number', 'date', 'content', 'template_id', 'template', 'user', 'signatures', 'document_accesses')

@@ -3,7 +3,7 @@ from flask import Blueprint, request
 from models.document_access import (
     DocumentAccess,
     DocumentAccessSchema,
-    DocumentAccessViewSchema,
+    DocumentAccessVisitSchema,
 )
 from models.docsignature import Signature, SignatureSchema
 from models.document import Document
@@ -12,7 +12,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import desc
 from init import db
 
-# from auth import authorize_owner
+
 
 documents_accesses_bp = Blueprint("access", __name__, url_prefix="/access")
 
@@ -41,7 +41,7 @@ def create_access():
     )
     db.session.add(new_access)
     db.session.commit()
-    return DocumentAccessSchema().dump(new_access), 201
+    return DocumentAccessSchema(only=['document_id', 'share_link', 'expires_at', 'purpose']).dump(new_access), 201
 
 
 # update 'access_time' when document access link is accessed by whoever it's sent to
@@ -56,6 +56,9 @@ def access_document(share_link):
     db.session.commit()
     return DocumentAccessSchema().dump(access), 200
     # return {'message': 'Access time updated'}, 200
+@documents_accesses_bp.errorhandler(AttributeError)
+def handle_attribute_error(e):
+    return {"error": "create a document access link first"}, 500
 
 
 # sign document
@@ -91,11 +94,12 @@ def get_unsigned_access_links():
     current_user_id = get_jwt_identity()
     unsigned_links = (
         db.session.query(DocumentAccess)
-        .filter_by(user_id=current_user_id, signed=False)
+        .filter_by(user_id=current_user_id, purpose="Sign", signed=False)  # Add filter for signed=False
         .order_by(DocumentAccess.expires_at)
         .all()
     )
-    return DocumentAccessSchema(many=True).dump(unsigned_links), 200
+    return DocumentAccessSchema(many=True, exclude=["document"]).dump(unsigned_links), 200
+
 
 
 # all signed access links (for current user)
@@ -111,10 +115,10 @@ def get_signed_access_links():
     return DocumentAccessSchema(many=True).dump(signed_links), 200
 
 
-# link views sorted by number of views (for current user)
-@documents_accesses_bp.route("/views", methods=["GET"])
+# link views sorted by number of link visits (for one the current user generated)
+@documents_accesses_bp.route("/visits", methods=["GET"])
 @jwt_required()
-def get_views():
+def get_visits():
     current_user_id = get_jwt_identity()
 
     # Query and order by views
@@ -125,4 +129,4 @@ def get_views():
         .all()
     )
 
-    return DocumentAccessViewSchema(many=True).dump(document_accesses), 200
+    return DocumentAccessVisitSchema(many=True).dump(document_accesses), 200

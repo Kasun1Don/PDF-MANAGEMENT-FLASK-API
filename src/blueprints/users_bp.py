@@ -100,9 +100,9 @@ def create_user():
 # admin can delete a user (if from same organization)
 @users_bp.route("/<int:id>", methods=["DELETE"])
 @jwt_required()
-# @admin_only
 def delete_user(id):
     user_to_delete = db.get_or_404(User, id)
+    
     db.session.delete(user_to_delete)
     db.session.commit()
     return {"message": "User deleted successfully"}
