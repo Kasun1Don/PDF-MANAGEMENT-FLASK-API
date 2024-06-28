@@ -1,9 +1,9 @@
 from datetime import timedelta
-from flask import Blueprint, request
-from models.user import User, UserSchema
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from init import db, bcrypt
 from auth import admin_only
+from models.user import User, UserSchema
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask import Blueprint, request
 
 # from auth import admin_only
 
@@ -106,4 +106,4 @@ def delete_user(id):
     
     db.session.delete(user_to_delete)
     db.session.commit()
-    return {"message": "User deleted successfully"}
+    return {"message": "User deleted successfully"}, 200

@@ -16,7 +16,6 @@ def admin_only(fn):
             return jsonify({"error": "Admin access required"}), 403
 
         return fn(*args, **kwargs)
-    
     return inner
 
 

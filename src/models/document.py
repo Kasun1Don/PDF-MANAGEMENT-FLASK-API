@@ -41,4 +41,5 @@ class DocumentSchema(ma.Schema):
     signatures = fields.Nested('SignatureSchema',exclude=['signatures'])
 
     class Meta:
-        fields = ('id', 'org_name', 'document_type', 'document_number', 'date', 'content', 'template_id', 'template', 'user', 'signatures', 'document_accesses')
+        fields = ('id', 'org_name', 'document_type', 'document_number', 'date', 'content', 
+                  'template_id', 'template', 'user', 'signatures', 'document_accesses')

@@ -1,9 +1,10 @@
-from flask import Blueprint, request
-from models.document import Document, DocumentSchema
-from models.user import User
-from flask_jwt_extended import jwt_required, get_jwt_identity
 from init import db
 from auth import authorize_owner, admin_only
+from models.document import Document, DocumentSchema
+from models.user import User
+from flask import Blueprint, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
 
 documents_bp = Blueprint("documents", __name__, url_prefix="/documents")
 
@@ -107,11 +108,7 @@ def update_document(document_id):
 @jwt_required()
 def delete_document(document_id):
     # Retrieve the document by ID
-    document = db.session.get(Document, document_id)
-
-    # If document not found, return 404
-    if not document:
-        return {"error": "Document not found"}, 404
+    document = db.get_or_404(Document, document_id)
 
     # Check if the user is the owner of the document
     authorize_owner(document)

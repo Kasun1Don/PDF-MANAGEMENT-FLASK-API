@@ -32,8 +32,8 @@ def db_create():
             is_admin=False
         ),
         User(
-            username="charlie",
-            email="charlie@example.com",
+            username="don",
+            email="don@example.com",
             password=bcrypt.generate_password_hash("password").decode('utf8'),
             org_name="OrgB",
             is_admin=True

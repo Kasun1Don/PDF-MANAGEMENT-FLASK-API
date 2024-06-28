@@ -1,9 +1,10 @@
 
-from flask import Blueprint, request
-from flask_jwt_extended import jwt_required
 from init import db
 from models.template import Template, TemplateSchema
+from models.document import Document
 from auth import admin_only
+from flask import Blueprint, request
+from flask_jwt_extended import jwt_required
 
 templates_bp = Blueprint("templates", __name__, url_prefix="/templates")
 
@@ -38,4 +39,17 @@ def create_template():
     
     return TemplateSchema().dump(new_template), 201
 
+# delete template if not being used
+@templates_bp.route("/<int:id>", methods=["DELETE"])
+@admin_only
+def delete_template(id):
+    template = db.get_or_404(Template, id)
 
+     # check if there are any documents using this template
+    documents_using_template = db.session.query(Document).filter_by(template_id=id).count()
+    if documents_using_template > 0:
+        return {"error": "Cannot delete template. It's being used by one or more documents."}, 400
+
+    db.session.delete(template)
+    db.session.commit()
+    return {"message": "Template deleted successfully"}, 200

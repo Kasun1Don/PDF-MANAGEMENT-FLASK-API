@@ -1,9 +1,10 @@
-from flask import Blueprint
-from datetime import timedelta, datetime
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from sqlalchemy import desc
-from models.docsignature import Signature, SignatureSchema
 from init import db
+from models.docsignature import Signature, SignatureSchema
+from datetime import timedelta, datetime
+from flask_jwt_extended import jwt_required
+from flask import Blueprint
+from sqlalchemy import desc
+
 
 signatures_bp = Blueprint("signatures", __name__, url_prefix="/signatures")
 

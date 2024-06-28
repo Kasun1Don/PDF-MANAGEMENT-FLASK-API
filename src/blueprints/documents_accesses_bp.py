@@ -1,23 +1,17 @@
 from datetime import datetime
-from flask import Blueprint, request
-from models.document_access import (
-    DocumentAccess,
-    DocumentAccessSchema,
-    DocumentAccessVisitSchema,
-)
+from init import db
+from models.document_access import (DocumentAccess, DocumentAccessSchema, DocumentAccessVisitSchema)
 from models.docsignature import Signature, SignatureSchema
 from models.document import Document
-from models.user import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import Blueprint, request
 from sqlalchemy import desc, exists
-from init import db
-
 
 
 documents_accesses_bp = Blueprint("access", __name__, url_prefix="/access")
 
+# document access "purpose" options
 VALID_PURPOSES = ["Review", "Sign"]
-
 
 # create document access link
 @documents_accesses_bp.route("/", methods=["POST"])
