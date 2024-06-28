@@ -23,7 +23,8 @@ def get_templates():
 def create_template():
     params = TemplateSchema(only=["name", "structure"]).load(request.json, unknown="exclude")
     
-    # Check if the template with the same name already exists
+    # Check if a template with the same name already exists in the database
+    # looks for the first match in the Template table, names column
     existing_template = db.session.query(Template).filter_by(name=params["name"]).first()
     
     if existing_template:
@@ -45,7 +46,8 @@ def create_template():
 def delete_template(id):
     template = db.get_or_404(Template, id)
 
-     # check if there are any documents using this template
+    # Check if there are any documents using this template
+    # Ensures referential integrity by preventing deletion, if the template is in use.
     documents_using_template = db.session.query(Document).filter_by(template_id=id).count()
     if documents_using_template > 0:
         return {"error": "Cannot delete template. It's being used by one or more documents."}, 400

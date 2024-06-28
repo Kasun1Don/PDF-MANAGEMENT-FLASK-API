@@ -16,27 +16,37 @@ users_bp = Blueprint("users", __name__, url_prefix="/users")
 @jwt_required()
 def get_users():
     user_id = get_jwt_identity()
+
+    #  query searches for the organization name of the current user
     stmt = db.select(User).where(User.id == user_id)
     current_user_org = db.session.scalar(stmt).org_name
-    
+    # query the database for all instances where organization name is equal to current user
     users_stmt = db.select(User).where(User.org_name == current_user_org)
     users = db.session.scalars(users_stmt).all()
     return UserSchema(many=True).dump(users), 200
 
 
-# user registration (org_name is important)
 @users_bp.route("/register", methods=["POST"])
 def register_user():
+    """ Registers a new user (organization name is important)
+
+    This route validates the input data, creates a new user and saves it to
+    the database.
+    
+    Returns:
+        dict: The new user's data if successful, otherwise HTTP status code 400 with an 
+        error message.
+    """    
     params = UserSchema(only=["id", "username", "email", "password", "org_name"]).load(
         request.json, unknown="exclude"
     )
-
+    # query checks Users table to see if a matching email already exists
     stmt = db.select(User).filter_by(email=request.json["email"])
     user = db.session.scalar(stmt)
 
     if user:
         return {"error": "Email already registered"}, 400
-
+    
     user = User(
         username=params["username"],
         email=params["email"],
@@ -45,7 +55,6 @@ def register_user():
     )
     db.session.add(user)
     db.session.commit()
-
     return UserSchema().dump(user), 201
 
 
