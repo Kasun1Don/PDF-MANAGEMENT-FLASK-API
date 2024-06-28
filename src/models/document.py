@@ -1,4 +1,3 @@
-from typing import List
 import uuid
 from datetime import datetime
 from init import db, ma

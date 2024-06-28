@@ -56,7 +56,7 @@ def login():
     params = UserSchema(only=["email", "password"]).load(
         request.json, unknown="exclude"
     )
-
+    
     stmt = db.select(User).where(User.email == params["email"])
     user = db.session.scalar(stmt)
     if user and bcrypt.check_password_hash(

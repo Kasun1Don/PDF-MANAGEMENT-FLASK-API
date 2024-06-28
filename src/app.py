@@ -30,7 +30,6 @@ print(app.url_map)
 def not_found(err):
     return {"error": "Not Found"}, 404
 
-
 # marshmallow exceptions library validation error:
 @app.errorhandler(ValidationError)
 def invalid_request(err):

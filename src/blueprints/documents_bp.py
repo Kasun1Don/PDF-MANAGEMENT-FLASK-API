@@ -75,9 +75,7 @@ def create_document():
     db.session.add(new_document)
     db.session.commit()
 
-    return DocumentSchema(exclude=["signatures", "document_accesses"]).dump(new_document)
-
-    # return document_schema.dump(new_document), 201
+    return DocumentSchema(exclude=["signatures", "document_accesses"]).dump(new_document), 201
 
 
 

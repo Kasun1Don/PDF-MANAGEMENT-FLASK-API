@@ -1,9 +1,8 @@
-from typing import List
 from init import db, ma
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Boolean
 from marshmallow import fields, validate
-from marshmallow.validate import Length, And, Regexp
+from marshmallow.validate import Regexp
 
 class User(db.Model):
     __tablename__ = 'users'

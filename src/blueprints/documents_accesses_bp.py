@@ -37,24 +37,6 @@ def create_access():
     db.session.commit()
     return DocumentAccessSchema(only=['document_id', 'share_link', 'expires_at', 'purpose']).dump(new_access), 201
 
-
-# update 'access_time' when document access link is accessed by whoever it's sent to
-@documents_accesses_bp.route("/<uuid:share_link>", methods=["GET"])
-def access_document(share_link):
-    # Check if the share_link exists
-    access = db.session.query(DocumentAccess).filter_by(share_link=share_link).first()
-
-    # Update the access time
-    access.access_time = datetime.now()
-    access.views += 1  # increment document view counter
-    db.session.commit()
-    return DocumentAccessSchema().dump(access), 200
-    # return {'message': 'Access time updated'}, 200
-@documents_accesses_bp.errorhandler(AttributeError)
-def handle_attribute_error(e):
-    return {"error": "please create a document access link first"}, 500
-
-
 # sign document
 @documents_accesses_bp.route("/<uuid:share_link>/sign", methods=["POST"])
 def sign_document(share_link):
@@ -67,7 +49,7 @@ def sign_document(share_link):
     if access.expires_at < datetime.now():
         return {"error": "share link has expired"}, 403
 
-    # check if the document has already been signed
+    # check if the document has already been signed (1 signature per document)
     existing_signature = db.session.query(exists().where(Signature.document_id == access.document_id)).scalar()
     if existing_signature:
         return {"error": "Document has already been signed"}, 400
@@ -88,6 +70,25 @@ def sign_document(share_link):
     db.session.commit()
 
     return SignatureSchema().dump(new_signature), 201
+
+
+# update 'access_time' when document access link is accessed by whoever it's sent to
+@documents_accesses_bp.route("/<uuid:share_link>", methods=["GET"])
+def access_document(share_link):
+    # Check if the share_link exists
+    access = db.session.query(DocumentAccess).filter_by(share_link=share_link).first()
+
+    # Update the access time
+    access.access_time = datetime.now()
+    access.views += 1  # increment document view counter
+    db.session.commit()
+    return DocumentAccessSchema().dump(access), 200
+    # return {'message': 'Access time updated'}, 200
+@documents_accesses_bp.errorhandler(AttributeError)
+def handle_attribute_error(e):
+    return {"error": "please create a document access link first"}, 500
+
+
 
 
 # all unsigned access links by expiry date (for current user)

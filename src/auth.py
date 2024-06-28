@@ -19,8 +19,8 @@ def admin_only(fn):
     return inner
 
 
-# ensure that the JWT use is the owner of the document (for Document deletion)
+# ensure that the JWT user is the owner of the document (for Document deletion)
 def authorize_owner(document):
     user_id = get_jwt_identity()
     if user_id != document.user_id:
-        abort(make_response(jsonify(error = "You must be document owner"), 403))
+        abort(make_response({"error": "You must be document owner"}, 403))

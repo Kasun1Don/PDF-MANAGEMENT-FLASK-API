@@ -4,7 +4,7 @@ from init import db, ma
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Boolean, Integer, ForeignKey, DateTime
-from marshmallow import fields, validate
+from marshmallow import fields
 
 
 class DocumentAccess(db.Model):

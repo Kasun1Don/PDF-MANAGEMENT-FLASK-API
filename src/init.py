@@ -11,13 +11,13 @@ class Base(DeclarativeBase):
 
 app = Flask(__name__)
 
-
 app.config['JWT_SECRET_KEY'] = environ.get('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URI')
+
+# don't sort JSON response keys alphabetically
 app.json.sort_keys = False
 
 # configuration settings
-
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 

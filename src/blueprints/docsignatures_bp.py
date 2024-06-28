@@ -9,7 +9,7 @@ from sqlalchemy import desc
 signatures_bp = Blueprint("signatures", __name__, url_prefix="/signatures")
 
 
-# Route to list all signed documents from latest last 24 hours
+# get all documents signed in the last 24 hours
 @signatures_bp.route("/", methods=["GET"])
 @jwt_required()
 def list_signed_documents():
@@ -31,10 +31,5 @@ def get_signature_from_documents(document_id):
         .order_by(desc(Signature.timestamp))
         .all()
     )
-    return (
-        SignatureSchema(
-            many=True,
-            only=["timestamp", "signature_data", "signer_name", "signer_email"],
-        ).dump(signatures),
-        200,
-    )
+    return SignatureSchema(many=True,only=["timestamp", "signature_data", "signer_name", "signer_email"]
+                           ).dump(signatures), 200
