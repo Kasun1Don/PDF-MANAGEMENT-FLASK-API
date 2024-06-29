@@ -10,6 +10,7 @@ from models.docsignature import Signature
 
 db_commands = Blueprint('db', __name__)
 
+# recreate database and seed sample data
 @db_commands.cli.command("create")
 def db_create():
     db.drop_all()

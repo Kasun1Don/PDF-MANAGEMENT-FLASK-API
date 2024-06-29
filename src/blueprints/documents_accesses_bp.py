@@ -10,7 +10,7 @@ from sqlalchemy import desc, exists
 
 documents_accesses_bp = Blueprint("access", __name__, url_prefix="/access")
 
-# document access "purpose" options
+# document access link "purpose" field options:
 VALID_PURPOSES = ["Review", "Sign"]
 
 # create document access link
@@ -37,7 +37,7 @@ def create_access():
     db.session.commit()
     return DocumentAccessSchema(only=['document_id', 'share_link', 'expires_at', 'purpose']).dump(new_access), 201
 
-# sign document
+# document signing link
 @documents_accesses_bp.route("/<uuid:share_link>/sign", methods=["POST"])
 def sign_document(share_link):
     params = SignatureSchema().load(request.json, unknown="exclude")
@@ -72,7 +72,7 @@ def sign_document(share_link):
     return SignatureSchema().dump(new_signature), 201
 
 
-# update 'access_time' when document access link is accessed by whoever it's sent to
+# update 'access_time' when document access link is accessed
 @documents_accesses_bp.route("/<uuid:share_link>", methods=["GET"])
 def access_document(share_link):
     # Check if the share_link exists
@@ -80,7 +80,7 @@ def access_document(share_link):
 
     # Update the access time
     access.access_time = datetime.now()
-    access.views += 1  # increment document view counter
+    access.visits += 1  # increment document view counter
     db.session.commit()
     return DocumentAccessSchema().dump(access), 200
     # return {'message': 'Access time updated'}, 200
@@ -89,9 +89,7 @@ def handle_attribute_error(e):
     return {"error": "please create a document access link first"}, 500
 
 
-
-
-# all unsigned access links by expiry date (for current user)
+# all unsigned access links by ordered by expiry date (created by current user)
 @documents_accesses_bp.route("/unsigned", methods=["GET"])
 @jwt_required()
 def get_unsigned_access_links():
@@ -106,7 +104,7 @@ def get_unsigned_access_links():
 
 
 
-# all signed access links (for current user)
+# all signed access links (created by current user)
 @documents_accesses_bp.route("/signed", methods=["GET"])
 @jwt_required()
 def get_signed_access_links():
@@ -119,18 +117,17 @@ def get_signed_access_links():
     return DocumentAccessSchema(many=True).dump(signed_links), 200
 
 
-# link views sorted by number of link visits (for one the current user generated)
+# link visits sorted by number of link visits (for links created by current user)
 @documents_accesses_bp.route("/visits", methods=["GET"])
 @jwt_required()
 def get_visits():
     current_user_id = get_jwt_identity()
 
-    # Query and order by views
+    # Query and order by visits
     document_accesses = (
         db.session.query(DocumentAccess)
         .filter_by(user_id=current_user_id)
-        .order_by(desc(DocumentAccess.views))
+        .order_by(desc(DocumentAccess.visits))
         .all()
     )
-
     return DocumentAccessVisitSchema(many=True).dump(document_accesses), 200

@@ -27,7 +27,7 @@ class Document(db.Model):
     signatures: Mapped[list['Signature']] = relationship('Signature', back_populates='document', cascade='all, delete')
     
 class DocumentSchema(ma.Schema):
-    # Custom field validation
+    
     org_name = fields.String(required=True, validate=validate.Length(min=1,  error='organization name is required'))
     document_type = fields.String(required=True, validate=validate.Length(min=1, error='document type/name is required'))
     content = fields.Dict(required=True)

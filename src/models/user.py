@@ -19,7 +19,7 @@ class User(db.Model):
     document_accesses: Mapped[list['DocumentAccess']] = relationship('DocumentAccess', back_populates='user', cascade='all, delete')
 
 class UserSchema(ma.Schema):
-    # Custom field validation
+    # validations and error handling
     email = fields.Email(required=True)
     username = fields.String(required=True, validate=validate.Length(min=1, error='username must have more than one character'))
     password = fields.String(required=True, validate=Regexp('^[a-z0-9_-]{3,16}$', 
@@ -27,6 +27,7 @@ class UserSchema(ma.Schema):
     org_name = fields.String(required=True, validate=validate.Length(min=1,  error='your organization name is required'))
     is_admin = fields.Boolean(required=True)
 
+    # nested schema
     document_accesses = fields.Nested('DocumentAccessSchema', many=True, dump_only=True)
 
     class Meta:

@@ -9,10 +9,20 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 documents_bp = Blueprint("documents", __name__, url_prefix="/documents")
 
 
-# get all documents created for a given user id
+# get all documents created by the current user
 @documents_bp.route("/user/<int:user_id>", methods=["GET"])
 @jwt_required()
 def get_documents_by_user(user_id):
+    """
+    Gets all documents for a specific user.
+
+    This route allows users to retrieve all documents associated with their user_id.
+    It checks if the user exists and, if so, fetches all documents created by that user.
+
+    Returns:
+        dict: a list of documents serialized in DocumentSchema format. 
+        If the user_id is not found, returns an error message.
+    """
     user = db.session.get(User, user_id)
 
     if not user:
@@ -27,9 +37,10 @@ def get_documents_by_user(user_id):
 @jwt_required()
 def get_org_documents():
     user_id = get_jwt_identity()
+    # query the User table for the user matching the JWT token identifier
     current_user = db.session.get(User, user_id)
 
-    # Retrieve documents for the current user's organization
+    # query the Documents table for all documents belonging to current_user's organization
     documents = (
         db.session.query(Document).filter_by(org_name=current_user.org_name).all()
     )
@@ -43,7 +54,7 @@ def get_document(document_id):
     return DocumentSchema(exclude=["template_id", "signatures", "document_accesses"]).dump(document), 200
 
 
-# get ALL documents from database (Admin)
+# get ALL documents from database (Admin only)
 @documents_bp.route("/", methods=["GET"])
 @admin_only
 def get_all_documents():
@@ -51,12 +62,16 @@ def get_all_documents():
     return DocumentSchema(many=True, exclude=["template_id", "signatures", "document_accesses"]).dump(documents), 200
 
 
-
-# create documents
+# create new documents 
 @documents_bp.route("/", methods=["POST"])
 @jwt_required()
 def create_document():
-    # retrieve the ID of the current authenticated user to retrieve their org name
+    """_summary_
+
+    Returns:
+        _type_: _description_
+    """    
+    # retrieve the user_id of the current authenticated user to retrieve their org name
     user_id = get_jwt_identity()
     current_user = db.session.get(User, user_id)
 
@@ -78,12 +93,11 @@ def create_document():
     return DocumentSchema(exclude=["signatures", "document_accesses"]).dump(new_document), 201
 
 
-
-# document creator can update document
+# document creator can update a document
 @documents_bp.route("/<int:document_id>", methods=["PUT", "PATCH"])
 @jwt_required()
 def update_document(document_id):
-    # Retrieve the document by ID
+    # Retrieve the document by document_id
     document = db.get_or_404(Document, document_id)
 
     # Check if the user is the owner of the document
@@ -101,11 +115,11 @@ def update_document(document_id):
     return DocumentSchema( exclude=["template_id", "signatures", "document_accesses"]).dump(document), 200
 
 
-# document creator can delete documents
+# document creator can delete a document
 @documents_bp.route("/<int:document_id>", methods=["DELETE"])
 @jwt_required()
 def delete_document(document_id):
-    # Retrieve the document by ID
+    # Retrieves the document by document_id
     document = db.get_or_404(Document, document_id)
 
     # Check if the user is the owner of the document
