@@ -13,8 +13,7 @@ documents_bp = Blueprint("documents", __name__, url_prefix="/documents")
 @documents_bp.route("/user/<int:user_id>", methods=["GET"])
 @jwt_required()
 def get_documents_by_user(user_id):
-    """
-    Gets all documents for a specific user.
+    """Gets all documents for a specific user
 
     This route allows users to retrieve all documents associated with their user_id.
     It checks if the user exists and, if so, fetches all documents created by that user.
@@ -24,7 +23,6 @@ def get_documents_by_user(user_id):
         If the user_id is not found, returns an error message.
     """
     user = db.session.get(User, user_id)
-
     if not user:
         return {"error": "user_id not found"}, 404
     
@@ -66,12 +64,14 @@ def get_all_documents():
 @documents_bp.route("/", methods=["POST"])
 @jwt_required()
 def create_document():
-    """_summary_
+    """Create a new document
+
+    Any User can create a new document by providing the document type, content, and ID of the template they want to use. 
+    The document is automatically associated with the current user's organization.
 
     Returns:
-        _type_: _description_
+        dict: the newly created document serialized in DocumentSchema format.
     """    
-    # retrieve the user_id of the current authenticated user to retrieve their org name
     user_id = get_jwt_identity()
     current_user = db.session.get(User, user_id)
 
@@ -86,10 +86,8 @@ def create_document():
         template_id=params["template_id"],
         user_id=user_id,
     )
-
     db.session.add(new_document)
     db.session.commit()
-
     return DocumentSchema(exclude=["signatures", "document_accesses"]).dump(new_document), 201
 
 
@@ -97,10 +95,20 @@ def create_document():
 @documents_bp.route("/<int:document_id>", methods=["PUT", "PATCH"])
 @jwt_required()
 def update_document(document_id):
-    # Retrieve the document by document_id
+    """Update an existing document
+
+    This route allows the creator of a document to update its type and content by providing 
+    the document_id. Only the owner of the document can perform this action.
+
+    Args:
+        document_id (int): The ID of the document to be updated.
+
+    Returns:
+        dict: The updated document serialized in DocumentSchema format.
+    """
     document = db.get_or_404(Document, document_id)
 
-    # Check if the user is the owner of the document
+    # check if the user is the owner of the document (auth.py)
     authorize_owner(document)
 
     document_info = DocumentSchema(only=['document_type', 'content'], unknown="exclude").load(
@@ -109,9 +117,7 @@ def update_document(document_id):
     # update the relevant fields
     document.document_type=document_info.get('document_type', document.document_type)
     document.content=document_info.get('content', document.content)
-
     db.session.commit()
-
     return DocumentSchema( exclude=["template_id", "signatures", "document_accesses"]).dump(document), 200
 
 
@@ -119,14 +125,13 @@ def update_document(document_id):
 @documents_bp.route("/<int:document_id>", methods=["DELETE"])
 @jwt_required()
 def delete_document(document_id):
-    # Retrieves the document by document_id
+    # retrieves the document by document_id
     document = db.get_or_404(Document, document_id)
 
-    # Check if the user is the owner of the document
+    # check if the user is the owner of the document
     authorize_owner(document)
 
-    # Delete the document
+    # delete the document
     db.session.delete(document)
     db.session.commit()
-
     return {"message": "Document deleted successfully"}, 200

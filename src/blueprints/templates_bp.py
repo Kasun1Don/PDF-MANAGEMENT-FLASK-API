@@ -22,7 +22,7 @@ def get_templates():
 @templates_bp.route("/", methods=["POST"])
 @admin_only
 def create_template():
-    """create a new document template
+    """Create a new document template
 
     This route allows admins to create a new template by providing the template's unique name and structure.
 
