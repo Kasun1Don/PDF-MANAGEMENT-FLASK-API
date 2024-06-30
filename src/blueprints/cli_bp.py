@@ -75,7 +75,7 @@ def db_create():
             date="2024-06-01",
             content={"title": "Agreement", "content": "This is a legal document.", "signatures": []},
             template_id=2,
-            user_id=1
+            user_id=2
         ),
         Document(
             org_name="OrgA",
@@ -111,7 +111,7 @@ def db_create():
             date="2024-07-10",
             content={"title": "Service Agreement", "content": "This is a service agreement.", "signatures": []},
             template_id=2,
-            user_id=3
+            user_id=2
         ),
         Document(
             org_name="OrgA",
@@ -141,13 +141,13 @@ def db_create():
             user_id=1
         ),
         Document(
-            org_name="OrgB",
+            org_name="OrgC",
             document_type="Legal",
             document_number="123e4567-e89b-12d3-a456-426614174010",
             date="2024-07-25",
             content={"title": "MOU", "content": "This is a memorandum of understanding.", "signatures": []},
             template_id=2,
-            user_id=1
+            user_id=3
         )
     ]
 
