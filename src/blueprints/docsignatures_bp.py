@@ -37,7 +37,7 @@ def get_signature_from_documents(document_id):
     """Get all signature details for a specific document.
 
     This endpoint allows a user to get the signature details associated with a specific document, 
-    identified by its document_id. The results are ordered by the timestamp in descending order.
+    identified by its document_id. Else return error message.
 
     Returns:
         Response: A JSON response with the signature for the specified document.
@@ -47,5 +47,10 @@ def get_signature_from_documents(document_id):
         .filter_by(document_id=document_id)
         .order_by(desc(Signature.timestamp)).first()
     )
-    return SignatureSchema(only=["timestamp", "signature_data", "signer_name", "signer_email"]
+
+    if signature:
+        return SignatureSchema(only=["timestamp", "signature_data", "signer_name", "signer_email"]
             ).dump(signature), 200
+    
+    else:
+        return {"error": "No signature found for the specified document"}, 404
