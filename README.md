@@ -23,7 +23,7 @@ The endpoints offer additional business functionality, such as tracking which do
 
 The project progress was tracked using a 'GitHub Projects' Kanban board and daily standups. This proved convenient to have the project management tool in the same location as source control. The Kanban board started with "Backlog", "In progress" and "Done" columns, however due to multiple ideas for future functionality an "Extra Features" column was added.
 
-The following are screen captures of the project progress tracking through the length of the project.
+The following are screen captures of the project progress tracking through the course of the project.
 
 ### DATE: 26th June 2024
 
@@ -53,7 +53,6 @@ The following are screen captures of the project progress tracking through the l
 
 Below are a few examples of daily standups:
 
----|----------|--------------------|
 ![kanban](/docs/StandUps/1.png) | ![kanban](/docs/StandUps/2.png) | ![kanban](/docs/StandUps/3.png) | 
 
 
