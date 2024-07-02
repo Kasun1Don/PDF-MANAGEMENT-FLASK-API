@@ -115,12 +115,7 @@ id | username | email              | password | org_name | is_admin
 
 
 ## API Endpoint documentation
-
-Users
-
-Documents
-
-For each endpoint, the following are the HTTP verb, route, required body/header data and response:
+For each endpoint, the following are the HTTP verb, route, required body/header data and responses:
 
 ### Users
 
@@ -130,13 +125,13 @@ For each endpoint, the following are the HTTP verb, route, required body/header 
 
 * Route: /users
 
-* Required body/header data: 
+* Required data: 
 
 Body | Header 
 ---|----------
 None | Valid JWT    
 
-* Expected response: 
+* Expected responses: 
 
 Body | Header 
 ---|----------
@@ -144,14 +139,136 @@ JSON object of the users (id, username, email, org_name, is_admin) | HTTP Status
 
 * Example:
 
-![ERD](/docs/API_ERD.jpeg)
+![ex](/docs/RouteTests/users_get.png)
 
 * Failure Example(s):
 
-![ERD](/docs/API_ERD.jpeg)
+Header | Body 
+---|----------
+HTTP Status Code 401 Unauthorized | {"msg": "Missing Authorization Header"}
+HTTP Status Code 403 Forbidden | {"msg": "Invalid Token"}
 
+* **Description: Registers a new user (all fields are required)**
+
+* HTTP verb: POST
+
+* Route: /users/register
+
+* Required data: 
+
+Body | Header 
+---|----------
+{"username": "string", "email": "string", "password": "string", "org_name": "string"} | None
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the new user (id, username, email, org_name, is_admin) | HTTP Status Code 201 Created
+
+* Example:
+
+![ex](/docs/RouteTests/user_register.png)
+
+* Failure Example(s):
+
+Header | Body 
+---|----------
+HTTP Status Code 400 Bad Request | {"error": "Email already registered"}
+
+![ex](/docs/RouteTests/failed/email_already_rego.png)
+
+* **Description: Login and generate JWT**
+
+* HTTP verb: POST
+
+* Route: /users/login
+
+* Required data: 
+
+Body | Header 
+---|----------
+{"email": "string", "password": "string"} | None
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+{"token": "JWT token"} | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/users_login.png)
+
+* Failure Example(s):
+
+Header | Body 
+---|----------
+HTTP Status Code 401 Unauthorized | {"error": "Invalid email or password"}
+
+![ex](/docs/RouteTests/failed/login_invalid_user.png)
+
+* **Description: Admin can create a new admin user account**
+
+* HTTP verb: POST
+
+* Route: /users/create
+
+* Required data: 
+
+Body | Header 
+---|----------
+{"username": "string", "email": "string", "password": "string", "org_name": "string", "is_admin": "boolean"} | Valid JWT (admin)
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the new user (id, username, email, org_name, is_admin) | HTTP Status Code 201 Created
+
+* Example:
+
+![ex](/docs/RouteTests/users_create_admin.png)
+
+* Failure Example(s):
+
+Header | Body 
+---|----------
+HTTP Status Code 400 Bad Request | {"error": "Email already registered"}
+HTTP Status Code 403 Forbidden | {"msg": "Admin access required"}
+
+* **Description: Admin can delete a user account**
+
+* HTTP verb: DELETE
+
+* Route: /users//int:id
+
+* Required data: 
+
+Body | Header 
+---|----------
+None | Valid JWT (admin)
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+{"message": "User deleted successfully"} | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/user_delete.png)
+
+* Failure Example(s):
+
+Header | Body 
+---|----------
+HTTP Status Code 403 Forbidden | {"msg": "Admin access required"}
+HTTP Status Code 404 Not Found | {"msg": "Not Found"}
 
 ### Documents
+
+
 
 ### Templates
 
