@@ -208,7 +208,8 @@ HTTP Status Code 401 Unauthorized | {"error": "Invalid email or password"}
 
 ![ex](/docs/RouteTests/failed/login_invalid_user.png)
 
-#### **Description: Admin can create a new admin user account**
+
+### **Description: Admin can create a new admin user account**
 
 * HTTP verb: POST
 
