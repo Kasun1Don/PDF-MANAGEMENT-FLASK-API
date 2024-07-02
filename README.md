@@ -2,7 +2,7 @@
 
 GitHub repository: https://github.com/Kasun1Don/PDF-MANAGEMENT-FLASK-API
 
-## The Problem and Solution
+## 1. The Problem and Solution
 
 Documents are central to professional communication, wether it be invoices, contracts,reports and brochures. Businesses generate billions of PDFs daily. Traditional methods for generating PDFs based on real-time business data often required complex processes varying from manual data entry to custom scripting involving multiple handoffs between  different software systems. A PDF generation API addresses these challenges by providing a more automated and efficient way to create documents with real-time data. What takes hours can be done in seconds. 
 
@@ -21,7 +21,7 @@ The endpoints offer additional business functionality, such as tracking which do
 
 #### ^https://www.ibml.com/blog/how-to-choose-the-best-document-automation-software/
 
-## Project Tracking
+## 2. Project Tracking
 
 The project progress was tracked using a 'GitHub Projects' Kanban board and daily standups. This proved convenient to have the project management tool in the same location as source control. The Kanban board started with "Backlog", "In progress" and "Done" columns, however due to multiple ideas for future functionality an "Extra Features" column was added.
 
@@ -40,13 +40,13 @@ DATE: 28th June 2024
 Here are a few examples of daily standups:
 
 
-## Third party services packages and dependencies used in the project
+## 3. Third party services packages and dependencies used in the project
 
-## Benefits and drawbacks of the PostgreSQL database system
+## 4. Benefits and drawbacks of the PostgreSQL database system
 
-## Features, purpose and functionality of the SQLAlchemy ORM
+## 5. Features, purpose and functionality of the SQLAlchemy ORM
 
-## Entity Relationship Diagram (ERD)
+## 6. Entity Relationship Diagram (ERD)
 
 The diagram below is the application's entity relationship diagram (ERD). This ERD depicts all the entities of the relational database design for this application, the relationships are depicted using crow's foot notation (refer to diagram legend). In the provided ERD, all relations have been normalised:
 
@@ -114,9 +114,8 @@ id | username | email              | password | org_name | is_admin
 2  | bob      | bob@example.com    | pass456  | OrgB     | False
 
 
-## Implemented models and their relationships
+## 7. Implemented models and their relationships
 The application uses SQLAlchemy to define several models representing various entities in the application. These models include `User`, `Template`, `Document`, `DocumentAccess`, and `Signature`. Each model is linked to corresponding tables in the database, and relationships between these models are established to ensure data integrity and facilitate efficient data retrieval. These models are interconnected through various relationships like One-to-Many and Many-to-One.
-
 
 ### User Model
 
@@ -185,7 +184,7 @@ The Document model represents documents created by users. Each document belongs 
     * Many-to-One with User: A document is created by a user.
     * Many-to-One with Template: A document is based on a template.
     * One-to-Many with DocumentAccess: A document can have many access records.
-    * One-to-Many with Signature: A document can have many signatures.
+    * One-to-Many with Signature: A document can potentially have many signatures.
 
 - Maps to a `documents` table in the database
 
@@ -277,39 +276,7 @@ The Signature model represents signatures on documents.
     ```python
     document: Mapped['Document'] = relationship('Document', back_populates='signatures')
     ```
-
-### Queries Using Model Relationships
-
-**Get all documents for a user:**
-```python
-user_id = 1
-documents = db.session.query(Document).filter_by(user_id=user_id).all()
-```
-
-**Get all documents for an organization:**
-```python
-org_name = 'OrgA'
-documents = db.session.query(Document).filter_by(org_name=org_name).all()
-```
-
-**Get document access records for a document:**
-```python
-document_id = 1
-access_records = db.session.query(DocumentAccess).filter_by(document_id=document_id).all()
-```
-
-**Get signatures for a document:**
-```python
-document_id = 1
-signatures = db.session.query(Signature).filter_by(document_id=document_id).all()
-```
-
-### Summary
-
-This project uses SQLAlchemy to define and manage the relationships between models, ensuring data integrity and enabling efficient data retrieval through SQL queries. The models include `User`, `Template`, `Document`, `DocumentAccess`, and `Signature`, each with specific relationships that facilitate the creation, sharing, and management of documents within an organization. This relational database design ensures a scalable and maintainable system for handling document workflows.
-
-
-### Query examples with SQLAlchemy to access data using the models' relationships:
+### SQLAlchemy queries to access data using the models' relationships:
 
 Get all documents for a given user:
 
@@ -331,7 +298,6 @@ Get signatures for a document:
 document_id = 1
 signatures = db.session.query(Signature).filter_by(document_id=document_id).all()
 ```
-
 
 ## API Endpoint documentation
 For each endpoint, the following are the HTTP verb, route, required body/header data and responses:
