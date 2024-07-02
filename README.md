@@ -126,27 +126,27 @@ For each endpoint, the following are the HTTP verb, route, required body/header 
 
 **Description: Gets a list of all users from the current user's organization**
 
-HTTP verb: GET
+* HTTP verb: GET
 
-Route: /users
+* Route: /users
 
-Required body/header data: 
+* Required body/header data: 
 
 Body | Header 
 ---|----------
 None | Valid JWT    
 
-Expected response: 
+* Expected response: 
 
 Body | Header 
 ---|----------
 JSON object of the users (id, username, email, org_name, is_admin) | HTTP Status Code 200 OK    
 
-Example:
+* Example:
 
 ![ERD](/docs/API_ERD.jpeg)
 
-Failure Example (s):
+* Failure Example(s):
 
 ![ERD](/docs/API_ERD.jpeg)
 
