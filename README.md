@@ -11,7 +11,7 @@ Example use cases:
 * Generating invoices with real-time product details and pricing.
 * Healthcare records
 
-An AIIM (Association for Intelligent Information Management) study on the benefits of document processing automation shows organizations can reduce document processing times by an average of 80% with automation. Much of this is attributed to a 30 - 50% reduction in the time that staff spend on document related tasks. 
+An AIIM (Association for Intelligent Information Management) study on the benefits of document processing automation shows organizations can reduce document processing times by an average of 80% with automation. Much of this is attributed to a 30 - 50% reduction in the time that staff spend on document related tasks (Association for Intelligent Information Management, 2024). 
 
 With the QuickDoc API, businesses can tailor documents to their specific needs using custom templates, which combine pre-defined layouts with dynamic data fields. The API seamlessly merges data with the template, generating a complete and customized PDF document. JSON data is sent from the client to the API to fill the template fields accordingly.
 
@@ -19,28 +19,93 @@ Furthermore, the API enables document signatures and tracking link views for sha
 
 The endpoints offer additional business functionality, such as tracking which documents still require signatures and have not yet been signed.
 
-#### ^https://www.ibml.com/blog/how-to-choose-the-best-document-automation-software/
-
 ## 2. Project Tracking
 
 The project progress was tracked using a 'GitHub Projects' Kanban board and daily standups. This proved convenient to have the project management tool in the same location as source control. The Kanban board started with "Backlog", "In progress" and "Done" columns, however due to multiple ideas for future functionality an "Extra Features" column was added.
 
 The following are screen captures of the project progress tracking through the length of the project.
 
-DATE: 26th June 2024
+### DATE: 26th June 2024
 
-DATE: 27th June 2024
+![kanban](/docs/Kanban/1.png)
 
-DATE: 28th June 2024
+### DATE: 26th June 2024
 
+![kanban](/docs/Kanban/2.png)
 
+### DATE: 27th June 2024
+
+![kanban](/docs/Kanban/3.png)
+
+### DATE: 28th June 2024
+
+![kanban](/docs/Kanban/4.png)
+
+### DATE: 28th June 2024
+
+![kanban](/docs/Kanban/5.png)
+
+### DATE: 30th June 2024
+
+![kanban](/docs/Kanban/6.png)
 
 ### Agile project management through Stand Ups
 
-Here are a few examples of daily standups:
+Below are a few examples of daily standups:
+
+---|----------|--------------------|
+![kanban](/docs/StandUps/1.png) | ![kanban](/docs/StandUps/2.png) | ![kanban](/docs/StandUps/3.png) | 
 
 
 ## 3. Third party services packages and dependencies used in the project
+
+### Third Party Services, Packages, and Dependencies
+
+The application leverages several third-party services, packages, and dependencies. They facilitate various aspects of web development, from database interactions and authentication to data validation and serialization. Below is a detailed description of each:
+
+1. **bcrypt==4.1.3**:
+    - **Purpose**: Used for hashing passwords.
+    - **Description**: bcrypt is a password hashing function designed for secure password storage. It incorporates a salt to protect against rainbow table attacks and is computationally expensive to resist brute-force attacks. It is crucial for ensuring that user passwords are stored securely in the database. This ensures that even if two users have the same password, their hashes will be different, enhancing security. Bcrypt is used to hash passwords before storing them in the database and to verify user passwords during authentication.
+
+2. **Flask==3.0.3**:
+    - **Purpose**: Web framework for building the application.
+    - **Description**: Flask is a lightweight WSGI web application framework. It is designed with simplicity and flexibility in mind, allowing developers to build scalable web applications quickly. Flask's modular nature and extensive documentation make it an excellent choice for building RESTful APIs and web services.
+
+3. **Flask-Bcrypt==1.0.1**:
+    - **Purpose**: Integration of bcrypt with Flask.
+    - **Description**: Flask-Bcrypt is a Flask extension that provides bcrypt hashing utilities for Flask applications. It simplifies the use of bcrypt within the Flask context, making it easier to hash passwords and verify them during authentication processes.
+
+4. **Flask-JWT-Extended==4.6.0**:
+    - **Purpose**: JWT (JSON Web Token) authentication for Flask.
+    - **Description**: Flask-JWT-Extended adds support for using JSON Web Tokens to Flask for user authentication. JWTs are a secure way to transmit information between parties as a JSON object. This package provides tools for creating, decoding, and managing JWTs, enabling secure user authentication and session management.
+
+5. **marshmallow==3.21.3**:
+    - **Purpose**: Object serialization and deserialization.
+    - **Description**: Marshmallow is an ORM/ODM/framework-agnostic library for converting complex data types, such as objects, to and from native Python data types. It is used for data validation, serialization, and deserialization, making it easier to handle API request and response data in a structured way.
+
+6. **marshmallow-sqlalchemy==1.0.0**:
+    - **Purpose**: Integration of SQLAlchemy models with Marshmallow.
+    - **Description**: Marshmallow-SQLAlchemy is an integration library that adds SQLAlchemy support to Marshmallow. It provides serialization and deserialization of SQLAlchemy models, allowing seamless conversion between database records and Python objects for API responses and requests.
+
+7. **psycopg2-binary==2.9.9**:
+    - **Purpose**: PostgreSQL database adapter.
+    - **Description**: psycopg2-binary is a PostgreSQL adapter for Python. It is used to connect and interact with the PostgreSQL database from within a Python application. It supports the full range of SQL operations, providing a robust and efficient way to perform database queries and transactions.
+
+8. **PyJWT==2.8.0**:
+    - **Purpose**: JSON Web Token implementation in Python.
+    - **Description**: PyJWT is a Python library for encoding and decoding JSON Web Tokens. It is used in conjunction with Flask-JWT-Extended to create, sign, and verify JWTs. This ensures secure transmission of information between the client and server in a stateless manner.
+
+9. **python-dotenv==1.0.1**:
+    - **Purpose**: Environment variable management.
+    - **Description**: python-dotenv is a library for loading environment variables from a .env file into the environment. It is useful for managing configuration settings, such as database URLs and secret keys, without hardcoding them into the application, thereby enhancing security and flexibility. In the app, environment variables like the SQLAlchemy database URI and JWT secret key are stored in a .env file, ensuring they are not hard-coded into the application.
+
+10. **SQLAlchemy==2.0.31**:
+    - **Purpose**: SQL toolkit and Object-Relational Mapping (ORM) library.
+    - **Description**: SQLAlchemy is a comprehensive SQL toolkit and ORM for Python. It provides a full suite of well-known enterprise-level persistence patterns, designed for efficient and high-performing database access. SQLAlchemy allows developers to work with databases using Python objects, facilitating complex queries and database management.
+
+11. **Werkzeug==3.0.3**:
+    - **Purpose**: WSGI utility library for Python.
+    - **Description**: Werkzeug is a comprehensive WSGI web application library. It is a key component of Flask, providing routing, debugging, and server functionalities. Werkzeug enhances the development process by offering utilities for request and response handling, URL routing, and error catching.
 
 ## 4. Benefits and drawbacks of the PostgreSQL database system
 PostgreSQL is the chosen database system for this application. Below is a examination of the benefits and drawbacks of selecting PostgreSQL:
@@ -1026,13 +1091,24 @@ JSON object of the signature details (timestamp, signature_data, signer_name, si
 ![ex](/docs/RouteTests/signatures_one.png)
 
 ## Style Guide
-All code and code comments are written in reference to PEP 8 - Style Guide ()
+All code and code comments are written in reference to PEP 8 (The Python Enhancement Proposals, 2024).
+
 
 ## Reference List
-- alchemy
--marshmallow
--text
--flask
--python
--stack overflow 
--error codes
+Association for Intelligent Information Management (AIIM). (n.d.). How to Choose the Best Document Automation Software. Available at: https://www.ibml.com/blog/how-to-choose-the-best-document-automation-software/.
+
+Flask. (2024). Welcome to Flask — Flask Documentation (3.0.x). Available at: https://flask.palletsprojects.com/en/3.0.x/.
+
+Marshmallow. (2024). Marshmallow Documentation. Available at: https://marshmallow.readthedocs.io/en/stable/marshmallow.validate.html.
+
+Mozilla Developer Network (MDN). (2024). HTTP Response Status Codes. Available at: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status.
+
+Python Software Foundation. (2024). The Python Standard Library. Available at: https://docs.python.org/3/.
+
+SQLAlchemy. (2024). SQLAlchemy Documentation. Available at: https://docs.sqlalchemy.org/en/20/.
+
+Stack Overflow. (2024). Can we set a default UUID for the ID field (primary key) in a Flask model. Available at: https://stackoverflow.com/questions/78297444/can-we-set-a-default-uuid-for-the-id-field-primary-key-in-a-flask-model.
+
+The Python Enhancement Proposals (PEP). (2024). PEP 8 – Style Guide for Python Code. Available at: https://peps.python.org/pep-0008/#:~:text=The%20Python%20standard%20library%20is,inside%20parentheses%2C%20brackets%20and%20braces.
+
+
