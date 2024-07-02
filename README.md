@@ -59,7 +59,7 @@ Normalisation prevents data redundancy, ensures data integrity, and optimizes re
 Normalisation to 3NF ensures each non-key attribute depends only on the primary key, eliminating redundancy and ensuring data integrity. Using the `DOCUMENTS` entity to illustrate how normalisation is achieved through these stages:
 
 #### 1NF
-In this form, the table has a primary key, each column has a unique name, and each cell contains only one value (atomicity). This form was the starting point of the database design for the Documents entity, where all the desired information fields were collated into a single table.
+In this form, the table has a primary key, each column has a unique name, and each cell contains only one value (atomicity). This form was the starting point of the database design for the `Documents` entity, where all the desired information fields were collated into a single table.
 
 DOCUMENTS
 id | org_name | document_type | document_number           | date       | content                             | template_id | user_id | purpose    | signed | access_time | visits | signature_data | signer_name | signer_email
@@ -67,35 +67,47 @@ id | org_name | document_type | document_number           | date       | content
 1  | OrgA     | Invoice       | 123e4567-e89b-12d3-a456-426614174000 | 2023-07-01 | {"total": 100, "items": ["item1"]} | 1           | 1       | Review     | False  | 2023-07-01  | 3      | data1          | Alice       | alice@example.com
 2  | OrgB     | Contract      | 123e4567-e89b-12d3-a456-426614174001 | 2023-07-02 | {"clauses": ["clause1"]}            | 2           | 2       | Sign       | True   | 2023-07-02  | 2      | data2          | Bob         | bob@example.com
 
-
 #### 2NF
 Builds on 1NF by ensuring that all non-key columns are dependent on the primary key. The Documents table is split into several smaller tables based on the dependencies that exist.
 
 * `DocumentAccess`: An DocumentAccess table is created, with the primary key of `id` to identify each access of a document. Columns like `purpose, signed, access_time, and visits are dependent on an access, hence they are part of the table.
 
+id | document_id | user_id | share_link | expires_at | purpose | signed | access_time | visits
+---|-------------|---------|------------|------------|---------|--------|-------------|-------
+1  | 1           | 1       | link1      | 2023-07-05 | Review  | False  | 2023-07-01  | 3
+2  | 2           | 2       | link2      | 2023-07-06 | Sign    | True   | 2023-07-02  | 2
+
+
 * `Signatures`: A Signatures table is also created, with the primary key of `id` to identify each signature. Columns signature_data, signer_name, and signer_email all depend on the id.
+
+id | document_id | timestamp  | signature_data | signer_name | signer_email
+---|-------------|------------|----------------|-------------|--------------
+1  | 1           | 2023-07-01 | data1          | Alice       | alice@example.com
+2  | 2           | 2023-07-02 | data2          | Bob         | bob@example.com
 
 * `Documents`: As all the non-key attributes in the original Documents table have now been split out into their own tables, `DocumentAccess` and `Signatures`, the `Documents` table now only contains the columns org_name, document_type, document_number, date, content, template_id, and user_id.
 
-
-
+id | org_name | document_type | document_number           | date       | content                             | template_id | user_id
+---|----------|---------------|---------------------------|------------|-------------------------------------|-------------|--------
+1  | OrgA     | Invoice       | 123e4567-e89b-12d3-a456-426614174000 | 2023-07-01 | {"total": 100, "items": ["item1"]} | 1           | 1
+2  | OrgB     | Contract      | 123e4567-e89b-12d3-a456-426614174001 | 2023-07-02 | {"clauses": ["clause1"]}            | 2           | 2
 
 #### 3NF
 Builds on 2NF by ensuring that all non-key columns are only dependent on the primary key and not on any other non-key column (no transitive dependency). This further ensures data integrity and eliminates redundancy.
 
 * `Templates`: A Templates table is created to store information about templates, eliminating transitive dependency from the Documents table.
 
+id | name             | structure
+---|------------------|-------------------------------------
+1  | InvoiceTemplate  | {"layout": "invoice layout"}
+2  | ContractTemplate | {"layout": "contract layout"}
+
 * `Users`: A Users table is created to store information about users, ensuring that user information is not repeated across documents.
 
-
-
-
-
-
-SECOND
-
-
-THIRD
+id | username | email              | password | org_name | is_admin
+---|----------|--------------------|----------|----------|---------
+1  | alice    | alice@example.com  | pass123  | OrgA     | True
+2  | bob      | bob@example.com    | pass456  | OrgB     | False
 
 
 ## Implemented models and their relationships
