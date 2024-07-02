@@ -1,5 +1,6 @@
 # API for dynamically generating PDFs - QuickDoc API
 
+GitHub repository: https://github.com/Kasun1Don/PDF-MANAGEMENT-FLASK-API
 
 ## The Problem and Solution
 
@@ -42,12 +43,53 @@ Here are a few examples of daily standups:
 ## Features, purpose and functionality of the SQLAlchemy ORM
 
 ## Entity Relationship Diagram (ERD)
+
+The diagram below is the application's entity relationship diagram (ERD). This ERD depicts all the entities of the relational database design for this application, the relationships are depicted using crow's foot notation (refer to diagram legend). In the provided ERD, all relations have been normalised:
+
 ![ERD](/docs/API_ERD.jpeg)
 
+### Normalisation
 
-The above is my entity relationship diagram (ERD) using crows foot notation. The design was developed through normalisation (explian normalisation process) and why --> the steps overview. Below is an example of normalisation process for the `documents` entity:
+Normalisation prevents data redundancy, ensures data integrity, and optimizes relational database performance by reducing data anomalies and ensuring consistency across relations. This process involves 3 stages:
 
-FIRST NORMAL FORM
+1. 1st Normal Form (1NF): Each table contains atomic values, and each field contains unique data.
+2. 2nd Normal Form (2NF): Each non-key attribute is fully functionally dependent on the primary key. For example, in DOCUMENT_ACCESS, share_link, expires_at, and other attributes are fully dependent on the primary key id.
+3. 3rd Normal Form (3NF): No transitive dependency exists. Non-key attributes depend only on the primary key. In DOCUMENTS, attributes like org_name and document_type depend directly on id.
+
+Normalisation to 3NF ensures each non-key attribute depends only on the primary key, eliminating redundancy and ensuring data integrity. Using the `DOCUMENTS` entity to illustrate how normalisation is achieved through these stages:
+
+#### 1NF
+In this form, the table has a primary key, each column has a unique name, and each cell contains only one value (atomicity). This form was the starting point of the database design for the Documents entity, where all the desired information fields were collated into a single table.
+
+DOCUMENTS
+id | org_name | document_type | document_number           | date       | content                             | template_id | user_id | purpose    | signed | access_time | visits | signature_data | signer_name | signer_email
+---|----------|---------------|---------------------------|------------|-------------------------------------|-------------|---------|------------|--------|-------------|--------|----------------|-------------|--------------
+1  | OrgA     | Invoice       | 123e4567-e89b-12d3-a456-426614174000 | 2023-07-01 | {"total": 100, "items": ["item1"]} | 1           | 1       | Review     | False  | 2023-07-01  | 3      | data1          | Alice       | alice@example.com
+2  | OrgB     | Contract      | 123e4567-e89b-12d3-a456-426614174001 | 2023-07-02 | {"clauses": ["clause1"]}            | 2           | 2       | Sign       | True   | 2023-07-02  | 2      | data2          | Bob         | bob@example.com
+
+
+#### 2NF
+Builds on 1NF by ensuring that all non-key columns are dependent on the primary key. The Documents table is split into several smaller tables based on the dependencies that exist.
+
+* `DocumentAccess`: An DocumentAccess table is created, with the primary key of `id` to identify each access of a document. Columns like `purpose, signed, access_time, and visits are dependent on an access, hence they are part of the table.
+
+* `Signatures`: A Signatures table is also created, with the primary key of `id` to identify each signature. Columns signature_data, signer_name, and signer_email all depend on the id.
+
+* `Documents`: As all the non-key attributes in the original Documents table have now been split out into their own tables, `DocumentAccess` and `Signatures`, the `Documents` table now only contains the columns org_name, document_type, document_number, date, content, template_id, and user_id.
+
+
+
+
+#### 3NF
+Builds on 2NF by ensuring that all non-key columns are only dependent on the primary key and not on any other non-key column (no transitive dependency). This further ensures data integrity and eliminates redundancy.
+
+* `Templates`: A Templates table is created to store information about templates, eliminating transitive dependency from the Documents table.
+
+* `Users`: A Users table is created to store information about users, ensuring that user information is not repeated across documents.
+
+
+
+
 
 
 SECOND
