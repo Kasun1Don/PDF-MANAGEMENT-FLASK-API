@@ -208,7 +208,7 @@ HTTP Status Code 401 Unauthorized | {"error": "Invalid email or password"}
 
 ![ex](/docs/RouteTests/failed/login_invalid_user.png)
 
-* **Description: Admin can create a new admin user account**
+#### **Description: Admin can create a new admin user account**
 
 * HTTP verb: POST
 
@@ -241,7 +241,7 @@ HTTP Status Code 403 Forbidden | {"msg": "Admin access required"}
 
 * HTTP verb: DELETE
 
-* Route: /users//int:id
+* Route: /users/int:id
 
 * Required data: 
 
