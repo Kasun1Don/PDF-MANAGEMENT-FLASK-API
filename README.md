@@ -126,114 +126,27 @@ For each endpoint, the following are the HTTP verb, route, required body/header 
 
 **Description: Gets a list of all users from the current user's organization**
 
-HTTP verb:
+HTTP verb: GET
 
-Route:
+Route: /users
 
 Required body/header data: 
 
-Expected response:
+Body | Header 
+---|----------
+None | Valid JWT    
+
+Expected response: 
+
+Body | Header 
+---|----------
+JSON object of the users (id, username, email, org_name, is_admin) | HTTP Status Code 200 OK    
 
 Example:
 
 ![ERD](/docs/API_ERD.jpeg)
 
-Failure Example:
-
-![ERD](/docs/API_ERD.jpeg)
-
-
-Description: 
-
-HTTP verb:
-
-Route:
-
-Required body/header data: 
-
-Expected response:
-
-Example:
-
-![ERD](/docs/API_ERD.jpeg)
-
-Failure Example:
-
-![ERD](/docs/API_ERD.jpeg)
-
-
-Description: 
-
-HTTP verb:
-
-Route:
-
-Required body/header data: 
-
-Expected response:
-
-Example:
-
-![ERD](/docs/API_ERD.jpeg)
-
-Failure Example:
-
-![ERD](/docs/API_ERD.jpeg)
-
-
-Description: 
-
-HTTP verb:
-
-Route:
-
-Required body/header data: 
-
-Expected response:
-
-Example:
-
-![ERD](/docs/API_ERD.jpeg)
-
-Failure Example:
-
-![ERD](/docs/API_ERD.jpeg)
-
-
-Description: 
-
-HTTP verb:
-
-Route:
-
-Required body/header data: 
-
-Expected response:
-
-Example:
-
-![ERD](/docs/API_ERD.jpeg)
-
-Failure Example:
-
-![ERD](/docs/API_ERD.jpeg)
-
-
-Description: 
-
-HTTP verb:
-
-Route:
-
-Required body/header data: 
-
-Expected response:
-
-Example:
-
-![ERD](/docs/API_ERD.jpeg)
-
-Failure Example:
+Failure Example (s):
 
 ![ERD](/docs/API_ERD.jpeg)
 
