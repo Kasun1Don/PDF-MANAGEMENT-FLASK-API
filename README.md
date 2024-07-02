@@ -119,7 +119,7 @@ For each endpoint, the following are the HTTP verb, route, required body/header 
 
 ### Users
 
-* **Description: Gets a list of all users from the current user's organization**
+### **Description: Gets a list of all users from the current user's organization**
 
 * HTTP verb: GET
 
@@ -148,7 +148,7 @@ Header | Body
 HTTP Status Code 401 Unauthorized | {"msg": "Missing Authorization Header"}
 HTTP Status Code 403 Forbidden | {"msg": "Invalid Token"}
 
-* **Description: Registers a new user (all fields are required)**
+### **Description: Registers a new user (all fields are required)**
 
 * HTTP verb: POST
 
@@ -178,7 +178,7 @@ HTTP Status Code 400 Bad Request | {"error": "Email already registered"}
 
 ![ex](/docs/RouteTests/failed/email_already_rego.png)
 
-* **Description: Login and generate JWT**
+### **Description: Login and generate JWT**
 
 * HTTP verb: POST
 
@@ -207,7 +207,6 @@ Header | Body
 HTTP Status Code 401 Unauthorized | {"error": "Invalid email or password"}
 
 ![ex](/docs/RouteTests/failed/login_invalid_user.png)
-
 
 ### **Description: Admin can create a new admin user account**
 
@@ -238,7 +237,7 @@ Header | Body
 HTTP Status Code 400 Bad Request | {"error": "Email already registered"}
 HTTP Status Code 403 Forbidden | {"msg": "Admin access required"}
 
-* **Description: Admin can delete a user account**
+### **Description: Admin can delete a user account**
 
 * HTTP verb: DELETE
 
@@ -269,17 +268,487 @@ HTTP Status Code 404 Not Found | {"msg": "Not Found"}
 
 ### Documents
 
+### **Description: Get all the documents created by the current logged in user**
 
+* HTTP verb: GET
+
+* Route: /documents/user/int:user_id
+
+* Required data: 
+
+Body | Header 
+---|----------
+None | Valid JWT
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the documents | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/documents_get_user.png)
+
+* Failure Example(s):
+
+Header | Body 
+---|----------
+HTTP Status Code 404 Not Found | {"error": "Not Found"}
+
+### **Description: Gets all documents for the current user's organization**
+
+* HTTP verb: GET
+
+* Route: /documents/org
+
+* Required data: 
+
+Body | Header 
+---|----------
+None | Valid JWT
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the documents | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/documents_get_org.png)
+
+### **Description: Get a specific document by the document ID**
+
+* HTTP verb: GET
+
+* Route: /documents/int:document_id
+
+* Required data: 
+
+Body | Header 
+---|----------
+None | Valid JWT
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the document | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/documents_get_one.png)
+
+* Failure Example(s):
+
+Header | Body 
+---|----------
+HTTP Status Code 404 Not Found | {"msg": "Not Found"}
+
+### **Description: Get all documents from the database (Admin only)**
+
+* HTTP verb: GET
+
+* Route: /documents
+
+* Required data: 
+
+Body | Header 
+---|----------
+None | Valid JWT (admin)
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of all documents | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/documents_get_all.png)
+
+* Failure Example(s):
+
+Header | Body 
+---|----------
+HTTP Status Code 403 Forbidden | {"msg": "Admin access required"}
+
+### **Description: Create new document(s) (using an available template)**
+
+* HTTP verb: POST
+
+* Route: /documents
+
+* Required data: 
+
+Body | Header 
+---|----------
+{"document_type": "string", "content": "JSON object", "template_id": "int"} | Valid JWT
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the new document | HTTP Status Code 201 Created
+
+* Example:
+
+![ex](/docs/RouteTests/documents_create.png)
+
+* Failure Example(s):
+
+![ex](/docs/RouteTests/failed/document_missing_data.png)
+
+### **Description: Update an existing document (must be document creator/owner)**
+
+* HTTP verb: PUT, PATCH
+
+* Route: /documents/int:document_id
+
+* Required data: 
+
+Body | Header 
+---|----------
+{"document_type": "string", "content": "JSON object"} | Valid JWT
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the updated document | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/documents_update.png)
+
+* Failure Example(s):
+
+Header | Body 
+---|----------
+HTTP Status Code 404 Not Found | {"msg": "Not Found"}
+
+### **Description: Delete a document (must be document creator/owner)**
+
+* HTTP verb: DELETE
+
+* Route: /documents/int:document_id
+
+* Required data: 
+
+Body | Header 
+---|----------
+None | Valid JWT
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+{"message": "Document deleted successfully"} | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/documents_delete.png)
+
+* Failure Example(s):
+
+Header | Body 
+---|----------
+HTTP Status Code 404 Not Found | {"msg": "Not Found"}
 
 ### Templates
 
-### Document_Accesses
+### **Description: Gets all templates available for creating documents, including the required fields for each template**
+
+* HTTP verb: GET
+
+* Route: /templates
+
+* Required data: 
+
+Body | Header 
+---|----------
+None | Valid JWT
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of all templates serialized in TemplateSchema format | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/templates_get.png)
+
+### **Description: Create a new document template (Admin only)**
+
+* HTTP verb: POST
+
+* Route: /templates
+
+* Required data: 
+
+Body | Header 
+---|----------
+{"name": "string", "structure": "JSON object"} | Valid JWT (admin)
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the newly created template serialized in TemplateSchema format | HTTP Status Code 201 Created
+
+* Example:
+
+![ex](/docs/RouteTests/templates_create.png)
+
+* Failure Example(s):
+
+Header | Body 
+---|----------
+HTTP Status Code 400 Bad Request | {"error": "Template with this name already exists"}
+HTTP Status Code 403 Forbidden | {"msg": "Admin access required"}
+
+![ex](/docs/RouteTests/failed/template_exists.png)
+
+### **Description: Delete a template (Admin only)**
+
+* HTTP verb: DELETE
+
+* Route: /templates/int:id
+
+* Required data: 
+
+Body | Header 
+---|----------
+None | Valid JWT
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+{"message": "Template deleted successfully"} | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/templates_delete.png)
+
+* Failure Example(s):
+
+Header | Body 
+---|----------
+HTTP Status Code 404 Not Found | {"msg": "Not found"}
+HTTP Status Code 400 Bad Request | {"error": "Cannot delete template. It's being used by one or more documents."}
+
+![ex](/docs/RouteTests/failed/template_cannot_delete.png)
+
+### Document_Accesses (document sharing links)
+
+### **Description: Create a document access link (link expires in 3 days)**
+
+* HTTP verb: POST
+
+* Route: /access
+
+* Required data: 
+- The purpose of the document access link creation is required (either 'Sign' or 'Review')
+
+Body | Header 
+---|----------
+{"document_id": "int", "purpose": "string"} | Valid JWT
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the new document access link (document_id, share_link, expires_at, purpose) | HTTP Status Code 201 Created
+
+* Example:
+
+![ex](/docs/RouteTests/accesses_link_creeate.png)
+
+* Failure Example(s):
+
+Header | Body 
+---|----------
+HTTP Status Code 400 Bad Request | {"error": "Invalid 'Purpose'. Valid options are: 'Review' or 'Sign'"}
+
+![ex](/docs/RouteTests/failed/accesses_sign_purpose.png)
+
+### **Description: Send a document to be signed by anyone with the unique document access link**
+
+* HTTP verb: POST
+
+* Route: /access/uuid:share_link/sign
+
+* Required data:
+
+Body | Header 
+---|----------
+{"signature_data": "string", "signer_name": "string", "signer_email": "string"} | None
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the new signature (signature_data, signer_name, signer_email, timestamp) | HTTP Status Code 201 Created
+
+* Example:
+
+![ex](/docs/RouteTests/accesses_sign.png)
+
+* Failure Example(s):
+
+Header | Body 
+---|----------
+HTTP Status Code 403 Forbidden | {"error": "share link has expired"}
+HTTP Status Code 400 Bad Request | {"error": "Document has already been signed"}
+HTTP Status Code 404 Not Found | {"msg": "Not found"}
+
+![ex](/docs/RouteTests/failed/already_signed.png)
+
+### **Description: Send the unique document access link for anyone to view**
+
+* HTTP verb: GET
+
+* Route: /access/uuid:share_link
+
+* Required data:
+
+Body | Header 
+---|----------
+None | None
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the document access data | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/open_access_link.png)
+
+* Failure Example(s):
+
+Header | Body 
+---|----------
+HTTP Status Code 404 Not Found | {"error": "please create a document access link first"}
+
+![ex](/docs/RouteTests/failed/accesses_link_required.png)
+
+### **Description: Get all unsigned document access links created by the current user**
+
+* HTTP verb: GET
+
+* Route: /access/unsigned
+
+* Required data:
+
+Body | Header 
+---|----------
+None | Valid JWT
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the unsigned document access links (excluding document) | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/accesses_get_all_unsigned.png)
+
+### **Description: Get all signed document access links created by the current user**
+
+* HTTP verb: GET
+
+* Route: /access/signed
+
+* Required data:
+
+Body | Header 
+---|----------
+None | Valid JWT
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the signed document access links | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/accesses_signed.png)
+
+### **Description: Sort document access links by the number of link visits**
+
+* HTTP verb: GET
+
+* Route: /access/visits
+
+* Required data:
+
+Body | Header 
+---|----------
+None | Valid JWT
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the document access links sorted by visits | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/accesses_visits.png)
+
 
 ### Signatures
 
+### **Description: Get the most recent documents that were signed (within the last 24 hours)**
 
+* HTTP verb: GET
 
-### 
+* Route: /signatures
+
+* Required data:
+
+Body | Header 
+---|----------
+None | Valid JWT
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the signed documents from the last 24 hours | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/signatures_all_24.png)
+
+### **Description: Get all signatures details for a specified document ID**
+
+* HTTP verb: GET
+
+* Route: /signatures/document/int:document_id
+
+* Required data:
+
+Body | Header 
+---|----------
+None | Valid JWT
+
+* Expected responses: 
+
+Body | Header 
+---|----------
+JSON object of the signature details (timestamp, signature_data, signer_name, signer_email) for the specified document | HTTP Status Code 200 OK
+
+* Example:
+
+![ex](/docs/RouteTests/signatures_one.png)
 
 ## Style guide
 All code and code comments are written in reference to PEP 8 - Style Guide ()
