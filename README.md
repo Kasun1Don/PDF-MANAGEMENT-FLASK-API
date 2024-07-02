@@ -124,7 +124,7 @@ For each endpoint, the following are the HTTP verb, route, required body/header 
 
 ### Users
 
-**Description: Gets a list of all users from the current user's organization**
+* **Description: Gets a list of all users from the current user's organization**
 
 * HTTP verb: GET
 
