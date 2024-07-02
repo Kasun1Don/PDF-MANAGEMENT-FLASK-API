@@ -45,6 +45,85 @@ Here are a few examples of daily standups:
 ## 4. Benefits and drawbacks of the PostgreSQL database system
 
 ## 5. Features, purpose and functionality of the SQLAlchemy ORM
+This application utilizes SQLAlchemy for its ORM (Object-Relational Mapping) system. SQLAlchemy facilitates seamless integration between Python and SQL databases by automatically translating Python class operations into SQL statements. This enables querying relational databases in a "Pythonic" way, significantly reducing the need for direct SQL use.
+
+Features and functionalities of SQLAlchemy ORM include:
+
+- **Establishing database connection**: To interact with the PostgreSQL database, a connection must be first established. Below is a demonstration of how SQLAlchemy is used to initialize the database connection in a Flask application:
+
+    ```python
+    from flask import Flask
+
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://user:password@localhost:5432/mydatabase'
+    ```
+
+- **Defining database models**: Database tables and relationships are defined using Python classes, with each class representing a database table and each instance corresponding to a row in that table. For example, the Document model demonstrates how to declare a primary key, set up foreign keys, and establish relationships with other tables. Here's an example of the Document model:
+
+    ```python
+    from sqlalchemy import ForeignKey
+    from sqlalchemy.orm import Mapped, mapped_column, relationship
+    from datetime import datetime
+    from typing import List
+    import uuid
+
+    class Document(db.Model):
+        __tablename__ = 'documents'
+        
+        id: Mapped[int] = mapped_column(primary_key=True)
+        org_name: Mapped[str] = mapped_column(String(80), nullable=False)
+        document_type: Mapped[str] = mapped_column(String(40), nullable=False)
+        document_number: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False)
+        date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=lambda: datetime.now())
+        content: Mapped[dict] = mapped_column(JSON, nullable=False)
+        template_id: Mapped[int] = mapped_column(Integer, ForeignKey('templates.id'), nullable=False)
+        user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id', ondelete="SET NULL"), nullable=True)
+
+        template: Mapped['Template'] = relationship('Template', back_populates='documents')
+        users: Mapped['User'] = relationship('User', back_populates='documents')
+        document_accesses: Mapped[List['DocumentAccess']] = relationship('DocumentAccess', back_populates='document', cascade='all, delete')
+        signatures: Mapped[List['Signature']] = relationship('Signature', back_populates='document', cascade='all, delete')
+    ```
+
+    In this example, the `Document` class corresponds to a `documents` table. The primary key is `id`, with `template_id` and `user_id` as foreign keys. Relationships with `Template`, `User`, `DocumentAccess`, and `Signature` classes are established.
+
+- **Performing CRUD operations**: SQLAlchemy models and sessions allow for create, read, update, and delete operations on the database. Examples involving the `documents` table include:
+
+    Read operation:
+
+    ```python
+    @documents_bp.route("/", methods=['GET'])
+    @jwt_required()
+    def get_all_documents():
+        user_id = get_jwt_identity()
+        stmt = db.select(Document).filter_by(user_id=user_id)
+        documents = db.session.scalars(stmt).all()
+        return DocumentSchema(many=True).dump(documents), 200
+    ```
+
+    Above is a SQLAlchemy statement to select all `Document` objects created by the current user. The statement is executed, and the `.all()` method returns the results as a list. The results are serialized into JSON format using the marshmallow schema `DocumentSchema`.
+
+    Create operation:
+
+    ```python
+    @documents_bp.route("/", methods=['POST'])
+    @jwt_required()
+    def create_document():
+        user_id = get_jwt_identity()
+        document_info = DocumentSchema(only=['document_type', 'content', 'template_id']).load(request.json, unknown='exclude')
+        document = Document(
+            org_name=document_info['org_name'],
+            document_type=document_info['document_type'],
+            content=document_info['content'],
+            template_id=document_info['template_id'],
+            user_id=user_id
+        )
+        db.session.add(document)
+        db.session.commit()
+        return DocumentSchema().dump(document), 201
+    ```
+
+    Here, JSON data is loaded from the request body using a marshmallow schema. A new `Document` object is created with this information. The new `Document` object is added to the database session and committed, saving the changes. A JSON response with the details of the new `Document` record is returned.
 
 ## 6. Entity Relationship Diagram (ERD)
 
