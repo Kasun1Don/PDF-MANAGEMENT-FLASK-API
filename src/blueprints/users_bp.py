@@ -23,10 +23,10 @@ def get_users():
     users = db.session.scalars(users_stmt).all()
     return UserSchema(many=True).dump(users), 200
 
-# register a user
+# register as a user
 @users_bp.route("/register", methods=["POST"])
 def register_user():
-    """ Registers a new user (organization name is required)
+    """ Registers a new user (organization name is required).
 
     This route validates the input data, creates a new user and saves it to
     the database.
