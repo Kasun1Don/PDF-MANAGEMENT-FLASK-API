@@ -53,7 +53,7 @@ The following are screen captures of the project progress tracking through the c
 
 Below are a few examples of daily standups:
 
-<img src="/docs/StandUps/1.png" width="200"> | <img src="/docs/StandUps/2.png" width="200"> | <img src="/docs/StandUps/3.png" width="200">| 
+<img src="/docs/StandUps/1.png" width="200">  <img src="/docs/StandUps/2.png" width="200">  <img src="/docs/StandUps/3.png" width="200">  
 
 
 ## 3. Third party services packages and dependencies used in the project
@@ -63,47 +63,36 @@ Below are a few examples of daily standups:
 The application leverages several third-party services, packages, and dependencies. They facilitate various aspects of web development, from database interactions and authentication to data validation and serialization. Below is a detailed description of each:
 
 1. **bcrypt==4.1.3**:
-    - **Purpose**: Used for hashing passwords.
     - **Description**: bcrypt is a password hashing function designed for secure password storage. It incorporates a salt to protect against rainbow table attacks and is computationally expensive to resist brute-force attacks. It is crucial for ensuring that user passwords are stored securely in the database. This ensures that even if two users have the same password, their hashes will be different, enhancing security. Bcrypt is used to hash passwords before storing them in the database and to verify user passwords during authentication.
 
 2. **Flask==3.0.3**:
-    - **Purpose**: Web framework for building the application.
     - **Description**: Flask is a lightweight WSGI web application framework. It is designed with simplicity and flexibility in mind, allowing developers to build scalable web applications quickly. Flask's modular nature and extensive documentation make it an excellent choice for building RESTful APIs and web services.
 
 3. **Flask-Bcrypt==1.0.1**:
-    - **Purpose**: Integration of bcrypt with Flask.
     - **Description**: Flask-Bcrypt is a Flask extension that provides bcrypt hashing utilities for Flask applications. It simplifies the use of bcrypt within the Flask context, making it easier to hash passwords and verify them during authentication processes.
 
 4. **Flask-JWT-Extended==4.6.0**:
-    - **Purpose**: JWT (JSON Web Token) authentication for Flask.
-    - **Description**: Flask-JWT-Extended adds support for using JSON Web Tokens to Flask for user authentication. JWTs are a secure way to transmit information between parties as a JSON object. This package provides tools for creating, decoding, and managing JWTs, enabling secure user authentication and session management.
+    - **Description**: JWT (JSON Web Token) authentication for Flask.Flask-JWT-Extended adds support for using JSON Web Tokens to Flask for user authentication. JWTs are a secure way to transmit information between parties as a JSON object. This package provides tools for creating, decoding, and managing JWTs, enabling secure user authentication and session management.
 
 5. **marshmallow==3.21.3**:
-    - **Purpose**: Object serialization and deserialization.
-    - **Description**: Marshmallow is an ORM/ODM/framework-agnostic library for converting complex data types, such as objects, to and from native Python data types. It is used for data validation, serialization, and deserialization, making it easier to handle API request and response data in a structured way.
+    - **Description**: Object serialization and deserialization. Marshmallow is an ORM/ODM/framework-agnostic library for converting complex data types, such as objects, to and from native Python data types. It is used for data validation, serialization, and deserialization, making it easier to handle API request and response data in a structured way.
 
 6. **marshmallow-sqlalchemy==1.0.0**:
-    - **Purpose**: Integration of SQLAlchemy models with Marshmallow.
     - **Description**: Marshmallow-SQLAlchemy is an integration library that adds SQLAlchemy support to Marshmallow. It provides serialization and deserialization of SQLAlchemy models, allowing seamless conversion between database records and Python objects for API responses and requests.
 
-7. **psycopg2-binary==2.9.9**:
-    - **Purpose**: PostgreSQL database adapter.
+7. **SQLAlchemy==2.0.31**:
+    - **Description**: SQL toolkit and Object-Relational Mapping (ORM) library. SQLAlchemy is a comprehensive SQL toolkit and ORM for Python. It provides a full suite of well-known enterprise-level persistence patterns, designed for efficient and high-performing database access. SQLAlchemy allows developers to work with databases using Python objects, facilitating complex queries and database management.
+
+8. **psycopg2-binary==2.9.9**:
     - **Description**: psycopg2-binary is a PostgreSQL adapter for Python. It is used to connect and interact with the PostgreSQL database from within a Python application. It supports the full range of SQL operations, providing a robust and efficient way to perform database queries and transactions.
 
-8. **PyJWT==2.8.0**:
-    - **Purpose**: JSON Web Token implementation in Python.
+9. **PyJWT==2.8.0**:
     - **Description**: PyJWT is a Python library for encoding and decoding JSON Web Tokens. It is used in conjunction with Flask-JWT-Extended to create, sign, and verify JWTs. This ensures secure transmission of information between the client and server in a stateless manner.
 
-9. **python-dotenv==1.0.1**:
-    - **Purpose**: Environment variable management.
+10. **python-dotenv==1.0.1**:
     - **Description**: python-dotenv is a library for loading environment variables from a .env file into the environment. It is useful for managing configuration settings, such as database URLs and secret keys, without hardcoding them into the application, thereby enhancing security and flexibility. In the app, environment variables like the SQLAlchemy database URI and JWT secret key are stored in a .env file, ensuring they are not hard-coded into the application.
 
-10. **SQLAlchemy==2.0.31**:
-    - **Purpose**: SQL toolkit and Object-Relational Mapping (ORM) library.
-    - **Description**: SQLAlchemy is a comprehensive SQL toolkit and ORM for Python. It provides a full suite of well-known enterprise-level persistence patterns, designed for efficient and high-performing database access. SQLAlchemy allows developers to work with databases using Python objects, facilitating complex queries and database management.
-
 11. **Werkzeug==3.0.3**:
-    - **Purpose**: WSGI utility library for Python.
     - **Description**: Werkzeug is a comprehensive WSGI web application library. It is a key component of Flask, providing routing, debugging, and server functionalities. Werkzeug enhances the development process by offering utilities for request and response handling, URL routing, and error catching.
 
 ## 4. Benefits and drawbacks of the PostgreSQL database system
