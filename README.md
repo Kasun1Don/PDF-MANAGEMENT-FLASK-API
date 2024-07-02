@@ -53,7 +53,7 @@ The following are screen captures of the project progress tracking through the c
 
 Below are a few examples of daily standups:
 
-![kanban](/docs/StandUps/1.png) | ![kanban](/docs/StandUps/2.png) | ![kanban](/docs/StandUps/3.png) | 
+![kanban](/docs/StandUps/1.png){: width="150"} | ![kanban](/docs/StandUps/2.png) | ![kanban](/docs/StandUps/3.png) | 
 
 
 ## 3. Third party services packages and dependencies used in the project
