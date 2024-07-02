@@ -15,7 +15,7 @@ An AIIM (Association for Intelligent Information Management) study on the benefi
 
 With the QuickDoc API, businesses can tailor documents to their specific needs using custom templates, which combine pre-defined layouts with dynamic data fields. The API seamlessly merges data with the template, generating a complete and customized PDF document. JSON data is sent from the client to the API to fill the template fields accordingly.
 
-Furthermore, the API enables document signatures and tracking link views for shared document links. 
+Furthermore, the API enables document signatures and tracking link views for shared document links.
 
 The endpoints offer additional business functionality, such as tracking which documents still require signatures and have not yet been signed.
 
@@ -27,9 +27,13 @@ The project progress was tracked using a 'GitHub Projects' Kanban board and dail
 
 The following are screen captures of the project progress tracking through the length of the project.
 
-DATE:
+DATE: 26th June 2024
 
-DATE:
+DATE: 27th June 2024
+
+DATE: 28th June 2024
+
+
 
 ### Agile project management through Stand Ups
 
@@ -111,7 +115,222 @@ id | username | email              | password | org_name | is_admin
 
 
 ## Implemented models and their relationships
-(how to answer this - structure)
+The application uses SQLAlchemy to define several models representing various entities in the application. These models include `User`, `Template`, `Document`, `DocumentAccess`, and `Signature`. Each model is linked to corresponding tables in the database, and relationships between these models are established to ensure data integrity and facilitate efficient data retrieval. These models are interconnected through various relationships like One-to-Many and Many-to-One.
+
+
+### User Model
+
+The User model represents the users of the application. Each user belongs to an organization and can create and access documents. Users can also be designated as admins.
+
+* Relationships:
+    * One-to-Many with Document: A user can create many documents.
+    * One-to-Many with DocumentAccess: A user can create many document access records.
+
+
+- Maps to a `users` table in the database
+
+    ```python
+    __tablename__ = 'users'
+    ```
+
+- Table has columns `id` (primary key), `username`, `email`, `password`, `org_name`, and `is_admin`
+
+    ```python
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String(150), nullable=False)
+    email: Mapped[str] = mapped_column(String(200), nullable=False, unique=True)
+    password: Mapped[str] = mapped_column(String(200), nullable=False)
+    org_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    is_admin: Mapped[bool] = mapped_column(Boolean(), default=False)
+    ```
+
+- Has attributes `documents` and `document_accesses` which are lists of all documents and document access records created by the user. Upon deletion of a user, all related document access records will also be deleted.
+
+    ```python
+    documents: Mapped[list['Document']] = relationship('Document', back_populates='users')
+    document_accesses: Mapped[list['DocumentAccess']] = relationship('DocumentAccess', back_populates='user', cascade='all, delete')
+    ```
+
+### Template Model
+The Template model represents document templates that users can use to create documents.
+
+* Relationships:
+    * One-to-Many with Document: A template can be used in many documents.
+
+- Maps to a `templates` table in the database
+
+    ```python
+    __tablename__ = 'templates'
+    ```
+
+- Table has columns `id` (primary key), `name`, and `structure`
+
+    ```python
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    structure: Mapped[dict] = mapped_column(JSON, nullable=False)
+    ```
+
+- Has an attribute called `documents`, which is a list of all documents using the template.
+
+    ```python
+    documents: Mapped[list['Document']] = relationship('Document', back_populates='template')
+    ```
+
+### Document Model
+
+The Document model represents documents created by users. Each document belongs to a user and is based on a template.
+
+* Relationships:
+    * Many-to-One with User: A document is created by a user.
+    * Many-to-One with Template: A document is based on a template.
+    * One-to-Many with DocumentAccess: A document can have many access records.
+    * One-to-Many with Signature: A document can have many signatures.
+
+- Maps to a `documents` table in the database
+
+    ```python
+    __tablename__ = 'documents'
+    ```
+
+- Table has columns `id` (primary key), `org_name`, `document_type`, `document_number`, `date`, `content`, `template_id` (foreign key), and `user_id` (foreign key)
+
+    ```python
+    id: Mapped[int] = mapped_column(primary_key=True)
+    org_name: Mapped[str] = mapped_column(String(80), nullable=False)
+    document_type: Mapped[str] = mapped_column(String(40), nullable=False)
+    document_number: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False)
+    date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=lambda: datetime.now())
+    content: Mapped[dict] = mapped_column(JSON, nullable=False)
+    template_id: Mapped[int] = mapped_column(Integer, ForeignKey('templates.id'), nullable=False)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id', ondelete="SET NULL"), nullable=True)
+    ```
+
+- Has attributes `template`, `users`, `document_accesses`, and `signatures` which link to related templates, users, document access records, and signatures. Upon deletion of a document, all related document access records and signatures will also be deleted.
+
+    ```python
+    template: Mapped['Template'] = relationship('Template', back_populates='documents')
+    users: Mapped['User'] = relationship('User', back_populates='documents')
+    document_accesses: Mapped[list['DocumentAccess']] = relationship('DocumentAccess', back_populates='document', cascade='all, delete')
+    signatures: Mapped[list['Signature']] = relationship('Signature', back_populates='document', cascade='all, delete')
+    ```
+
+### DocumentAccess Model
+The DocumentAccess model represents access records for documents, allowing users to share and control access to documents.
+
+* Relationships:
+    * Many-to-One with Document: A document access record is related to a document.
+    * Many-to-One with User: A document access record is created by a user.
+
+- Maps to a `document_accesses` table in the database
+
+    ```python
+    __tablename__ = 'document_accesses'
+    ```
+
+- Table has columns `id` (primary key), `share_link`, `expires_at`, `purpose`, `signed`, `access_time`, `visits`, `document_id` (foreign key), and `user_id` (foreign key)
+
+    ```python
+    id: Mapped[int] = mapped_column(primary_key=True)
+    share_link: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now() + timedelta(days=3), nullable=False)
+    purpose: Mapped[str] = mapped_column(String, nullable=False)
+    signed: Mapped[bool] = mapped_column(Boolean(), default=False)
+    access_time: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    visits: Mapped[int] = mapped_column(default=0)
+    document_id: Mapped[int] = mapped_column(Integer, ForeignKey('documents.id', ondelete="CASCADE"), nullable=False)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
+    ```
+
+- Has attributes `document` and `user` which link to related documents and users.
+
+    ```python
+    document: Mapped['Document'] = relationship('Document', back_populates='document_accesses')
+    user: Mapped['User'] = relationship('User', back_populates='document_accesses')
+    ```
+
+### Signature Model
+The Signature model represents signatures on documents.
+
+* Relationships:
+    * Many-to-One with Document: A signature is related to a document.
+
+- Maps to a `signatures` table in the database
+
+    ```python
+    __tablename__ = 'signatures'
+    ```
+
+- Table has columns `id` (primary key), `timestamp`, `signature_data`, `signer_name`, `signer_email`, and `document_id` (foreign key)
+
+    ```python
+    id: Mapped[int] = mapped_column(primary_key=True)
+    timestamp: Mapped[datetime] = mapped_column(DateTime, default=db.func.current_timestamp(), nullable=False)
+    signature_data: Mapped[str] = mapped_column(Text, nullable=False)
+    signer_name: Mapped[str] = mapped_column(String(80), nullable=False)
+    signer_email: Mapped[str] = mapped_column(String(160), nullable=False)
+    document_id: Mapped[int] = mapped_column(Integer, ForeignKey('documents.id'), nullable=False)
+    ```
+
+- Has an attribute called `document`, which links to the related document.
+
+    ```python
+    document: Mapped['Document'] = relationship('Document', back_populates='signatures')
+    ```
+
+### Queries Using Model Relationships
+
+**Get all documents for a user:**
+```python
+user_id = 1
+documents = db.session.query(Document).filter_by(user_id=user_id).all()
+```
+
+**Get all documents for an organization:**
+```python
+org_name = 'OrgA'
+documents = db.session.query(Document).filter_by(org_name=org_name).all()
+```
+
+**Get document access records for a document:**
+```python
+document_id = 1
+access_records = db.session.query(DocumentAccess).filter_by(document_id=document_id).all()
+```
+
+**Get signatures for a document:**
+```python
+document_id = 1
+signatures = db.session.query(Signature).filter_by(document_id=document_id).all()
+```
+
+### Summary
+
+This project uses SQLAlchemy to define and manage the relationships between models, ensuring data integrity and enabling efficient data retrieval through SQL queries. The models include `User`, `Template`, `Document`, `DocumentAccess`, and `Signature`, each with specific relationships that facilitate the creation, sharing, and management of documents within an organization. This relational database design ensures a scalable and maintainable system for handling document workflows.
+
+
+### Query examples with SQLAlchemy to access data using the models' relationships:
+
+Get all documents for a given user:
+
+```
+user_id = 1
+documents = db.session.query(Document).filter_by(user_id=user_id).all()
+```
+
+Get all documents for an organization:
+
+```
+org_name = 'OrgA'
+documents = db.session.query(Document).filter_by(org_name=org_name).all()
+```
+
+Get signatures for a document:
+
+```
+document_id = 1
+signatures = db.session.query(Signature).filter_by(document_id=document_id).all()
+```
 
 
 ## API Endpoint documentation
@@ -750,7 +969,7 @@ JSON object of the signature details (timestamp, signature_data, signer_name, si
 
 ![ex](/docs/RouteTests/signatures_one.png)
 
-## Style guide
+## Style Guide
 All code and code comments are written in reference to PEP 8 - Style Guide ()
 
 ## Reference List
