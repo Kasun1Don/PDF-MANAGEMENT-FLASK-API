@@ -43,6 +43,16 @@ Here are a few examples of daily standups:
 ## 3. Third party services packages and dependencies used in the project
 
 ## 4. Benefits and drawbacks of the PostgreSQL database system
+PostgreSQL is the chosen database system for this application. Below is a examination of the benefits and drawbacks of selecting PostgreSQL:
+
+| **Benefits**                                                                                                       | **Drawbacks**                                                                                                     |
+|--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| **ACID Compliance:** PostgreSQL ensures Atomicity, Consistency, Isolation, and Durability, which are crucial for maintaining data integrity and reliability. This is especially important for applications requiring robust transaction management, such as document handling and user authentication. | **Complexity:** PostgreSQL's rich feature set and advanced capabilities can make it more complex to set up and manage compared to simpler databases. This may require more expertise and effort from database administrators. |
+| **Extensibility:** PostgreSQL is highly extensible, allowing users to define their own data types, operators, and index methods. This flexibility is beneficial for customizing the database to fit the specific needs of the project. | **Resource Intensive:** PostgreSQL can be more resource-intensive in terms of memory and CPU usage, particularly when handling complex queries or high-concurrency environments. This might necessitate more powerful hardware. |
+| **Open Source:** Being open-source, PostgreSQL is free to use and has a large community of developers contributing to its continuous improvement. This ensures regular updates, security patches, and a wealth of third-party tools and extensions, which can enhance the development process. | **Learning Curve:** Due to its extensive capabilities and advanced features, PostgreSQL has a steeper learning curve for new users, especially those coming from simpler database systems like MySQL. |
+| **Advanced SQL Compliance:** PostgreSQL supports a wide range of SQL standards, including complex queries, joins, views, triggers, and stored procedures. This ensures compatibility with various applications and simplifies the migration process from other SQL databases. | |
+| **Performance Optimization:** With features like advanced indexing techniques, query optimization, and efficient memory management, PostgreSQL can handle large datasets and high-concurrency workloads effectively. This is beneficial for managing multiple users and documents in the project. While MySQL offers good performance, PostgreSQL's advanced indexing and optimization features often provide better performance for complex queries and large datasets. | |
+| **Security Features:** PostgreSQL offers robust security features, including SSL support for encrypted connections, data encryption, and a flexible and powerful access-control system. This is essential for protecting sensitive user and document data. | |
 
 ## 5. Features, purpose and functionality of the SQLAlchemy ORM
 This application utilizes SQLAlchemy for its ORM (Object-Relational Mapping) system. SQLAlchemy facilitates seamless integration between Python and SQL databases by automatically translating Python class operations into SQL statements. This enables querying relational databases in a "Pythonic" way, significantly reducing the need for direct SQL use.
@@ -128,6 +138,7 @@ Features and functionalities of SQLAlchemy ORM include:
 ## 6. Entity Relationship Diagram (ERD)
 
 The diagram below is the application's entity relationship diagram (ERD). This ERD depicts all the entities of the relational database design for this application, the relationships are depicted using crow's foot notation (refer to diagram legend). In the provided ERD, all relations have been normalised:
+
 
 ![ERD](/docs/API_ERD.jpeg)
 
@@ -378,7 +389,7 @@ document_id = 1
 signatures = db.session.query(Signature).filter_by(document_id=document_id).all()
 ```
 
-## API Endpoint documentation
+## 8. API Endpoint documentation
 For each endpoint, the following are the HTTP verb, route, required body/header data and responses:
 
 ### Users
