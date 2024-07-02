@@ -55,6 +55,7 @@ def create_template():
 
 # delete a template if it's not being used
 @templates_bp.route("/<int:id>", methods=["DELETE"])
+@admin_only
 def delete_template(id):
     template = db.get_or_404(Template, id)
 
