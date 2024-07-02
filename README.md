@@ -58,7 +58,7 @@ Normalisation prevents data redundancy, ensures data integrity, and optimizes re
 
 Normalisation to 3NF ensures each non-key attribute depends only on the primary key, eliminating redundancy and ensuring data integrity. Using the `DOCUMENTS` entity to illustrate how normalisation is achieved through these stages:
 
-#### 1NF
+### 1NF
 In this form, the table has a primary key, each column has a unique name, and each cell contains only one value (atomicity). This form was the starting point of the database design for the `Documents` entity, where all the desired information fields were collated into a single table.
 
 DOCUMENTS
@@ -67,7 +67,7 @@ id | org_name | document_type | document_number           | date       | content
 1  | OrgA     | Invoice       | 123e4567-e89b-12d3-a456-426614174000 | 2023-07-01 | {"total": 100, "items": ["item1"]} | 1           | 1       | Review     | False  | 2023-07-01  | 3      | data1          | Alice       | alice@example.com
 2  | OrgB     | Contract      | 123e4567-e89b-12d3-a456-426614174001 | 2023-07-02 | {"clauses": ["clause1"]}            | 2           | 2       | Sign       | True   | 2023-07-02  | 2      | data2          | Bob         | bob@example.com
 
-#### 2NF
+### 2NF
 Builds on 1NF by ensuring that all non-key columns are dependent on the primary key. The Documents table is split into several smaller tables based on the dependencies that exist.
 
 * `DocumentAccess`: An DocumentAccess table is created, with the primary key of `id` to identify each access of a document. Columns like `purpose, signed, access_time, and visits are dependent on an access, hence they are part of the table.
@@ -92,7 +92,7 @@ id | org_name | document_type | document_number           | date       | content
 1  | OrgA     | Invoice       | 123e4567-e89b-12d3-a456-426614174000 | 2023-07-01 | {"total": 100, "items": ["item1"]} | 1           | 1
 2  | OrgB     | Contract      | 123e4567-e89b-12d3-a456-426614174001 | 2023-07-02 | {"clauses": ["clause1"]}            | 2           | 2
 
-#### 3NF
+### 3NF
 Builds on 2NF by ensuring that all non-key columns are only dependent on the primary key and not on any other non-key column (no transitive dependency). This further ensures data integrity and eliminates redundancy.
 
 * `Templates`: A Templates table is created to store information about templates, eliminating transitive dependency from the Documents table.
@@ -115,8 +115,6 @@ id | username | email              | password | org_name | is_admin
 
 
 ## API Endpoint documentation
-- Success documentation
--Failure (code snippets -table)
 
 Users
 
@@ -125,6 +123,25 @@ Documents
 For each endpoint, the following are the HTTP verb, route, required body/header data and response:
 
 ### Users
+
+** Description: Gets a list of all users from the current user's organization **
+
+HTTP verb:
+
+Route:
+
+Required body/header data: 
+
+Expected response:
+
+Example:
+
+![ERD](/docs/API_ERD.jpeg)
+
+Failure Example:
+
+![ERD](/docs/API_ERD.jpeg)
+
 
 Description: 
 
@@ -138,7 +155,87 @@ Expected response:
 
 Example:
 
+![ERD](/docs/API_ERD.jpeg)
+
 Failure Example:
+
+![ERD](/docs/API_ERD.jpeg)
+
+
+Description: 
+
+HTTP verb:
+
+Route:
+
+Required body/header data: 
+
+Expected response:
+
+Example:
+
+![ERD](/docs/API_ERD.jpeg)
+
+Failure Example:
+
+![ERD](/docs/API_ERD.jpeg)
+
+
+Description: 
+
+HTTP verb:
+
+Route:
+
+Required body/header data: 
+
+Expected response:
+
+Example:
+
+![ERD](/docs/API_ERD.jpeg)
+
+Failure Example:
+
+![ERD](/docs/API_ERD.jpeg)
+
+
+Description: 
+
+HTTP verb:
+
+Route:
+
+Required body/header data: 
+
+Expected response:
+
+Example:
+
+![ERD](/docs/API_ERD.jpeg)
+
+Failure Example:
+
+![ERD](/docs/API_ERD.jpeg)
+
+
+Description: 
+
+HTTP verb:
+
+Route:
+
+Required body/header data: 
+
+Expected response:
+
+Example:
+
+![ERD](/docs/API_ERD.jpeg)
+
+Failure Example:
+
+![ERD](/docs/API_ERD.jpeg)
 
 
 ### Documents
@@ -154,7 +251,7 @@ Failure Example:
 ### 
 
 ## Style guide
-All code comments are in style guide or comment style guide in the project documentation. (pep 8)
+All code and code comments are written in reference to PEP 8 - Style Guide ()
 
 ## Reference List
 - alchemy
