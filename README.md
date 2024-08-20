@@ -1099,4 +1099,8 @@ Stack Overflow. (2024). Can we set a default UUID for the ID field (primary key)
 
 The Python Enhancement Proposals (PEP). (2024). PEP 8 – Style Guide for Python Code. Available at: https://peps.python.org/pep-0008/#:~:text=The%20Python%20standard%20library%20is,inside%20parentheses%2C%20brackets%20and%20braces.
 
+## run the application (notes for self)
 
+- "flask run" --> insomia/bruno test routes (ctrl +c to quit)
+- "flask db create" - to initialize any new seed data changes
+- open a new terminal tab for PostgreSQL -> "psql postgres", connect to my database & \dt & select * from (table name).
